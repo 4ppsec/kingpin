@@ -669,7 +669,7 @@ public class ProKSy {
 		menuAbout.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				JOptionPane.showMessageDialog(frame,new MessageWithLink(
-					    "ProKSy v0.6\nby <a href=\"https://il.linkedin.com/in/gilad-ofir-44959919\">Gilad Ofir</a> and <a href=\"https://il.linkedin.com/in/talmelamed\">Tal Melamed</a>\nAppSe Labs\nhttps://appsec-labs.com"),
+					    "ProKSy v0.6<br>by <a href=\"https://il.linkedin.com/in/gilad-ofir-44959919\">Gilad Ofir</a> and <a href=\"https://il.linkedin.com/in/talmelamed\">Tal Melamed</a><br><a href=\"https://appsec-labs.com\">AppSec Labs</a>"),
 					    "ProKSy",
 					    JOptionPane.PLAIN_MESSAGE,
 					    icon);
