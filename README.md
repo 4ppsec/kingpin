@@ -1,2 +1,2 @@
 # ProKSy
-TCP Proxy with Java KeyStore Handling
+A TCP Proxy with Java KeyStore Handling to Support SSL/TLS connections.
