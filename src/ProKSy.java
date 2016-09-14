@@ -668,8 +668,8 @@ public class ProKSy {
 		JMenuItem menuAbout = new JMenuItem("About");
 		menuAbout.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				JOptionPane.showMessageDialog(frame,
-					    "ProKSy v0.6\nby Gilad Ofir and Tal Melamed\nAppSe Labs\nhttps://appsec-labs.com",
+				JOptionPane.showMessageDialog(frame,new MessageWithLink(
+					    "ProKSy v0.6\nby <a href=\"https://il.linkedin.com/in/gilad-ofir-44959919\">Gilad Ofir</a> and <a href=\"https://il.linkedin.com/in/talmelamed\">Tal Melamed</a>\nAppSe Labs\nhttps://appsec-labs.com"),
 					    "ProKSy",
 					    JOptionPane.PLAIN_MESSAGE,
 					    icon);
