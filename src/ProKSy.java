@@ -30,6 +30,7 @@ import java.security.UnrecoverableKeyException;
 import java.security.cert.CertificateException;
 import java.text.SimpleDateFormat;
 
+import javax.imageio.ImageIO;
 import javax.net.ssl.SSLSocket;
 import javax.net.ssl.SSLSocketFactory;
 import javax.swing.BorderFactory;
@@ -60,7 +61,11 @@ public class ProKSy {
 	
 	private static final String BIG_LOGO = "appsec_logo.png";
 	private static final String SMALL_LOGO = "appsec_logo_transparent.png";
-	
+	private static final String SAVE_ICON = "load-download-icon.png";
+	private static final String LOAD_ICON = "load-upload-icon.png";
+	private static final String START_ICON = "play-icon.png";
+	private static final String STOP_ICON = "stop-2-icon.png";
+	private static final String EXIT_ICON = "Logout-512.png";
 	protected static boolean canStart = false;
 	public static Run thread =null;
 	
@@ -463,11 +468,11 @@ public class ProKSy {
 		});
 		
 		JLabel lblKSPass = new JLabel("KeyStore Password:");
-		lblKSPass.setBounds(160, 122, 120, 16);
+		lblKSPass.setBounds(164, 106, 120, 16);
 		panConf.add(lblKSPass);
 
 		final JTextField txtKSPass = new JPasswordField();
-		txtKSPass.setBounds(288, 120, 110, 20);
+		txtKSPass.setBounds(288, 104, 110, 20);
 		panConf.add(txtKSPass);
 		txtKSPass.setColumns(10);
 		txtKSPass.addFocusListener(new FocusListener() {
@@ -485,7 +490,7 @@ public class ProKSy {
 		txtKSPath.setBorder(borderEmpty);
 		txtKSPath.setEditable(false);
 		txtKSPath.setForeground(Color.lightGray);
-		txtKSPath.setBounds(20, 150, 375, 16);
+		txtKSPath.setBounds(20, 135, 375, 16);
 		panConf.add(txtKSPath);
 				
 		// Browse KeyStore button
@@ -518,7 +523,7 @@ public class ProKSy {
 					btnSelectKS.setBorder(border);
 		    }
 		});
-		btnSelectKS.setBounds(20, 120, 100, 20);
+		btnSelectKS.setBounds(20, 104, 100, 20);
 		panConf.add(btnSelectKS);
 				
 		// top menu options
@@ -530,11 +535,25 @@ public class ProKSy {
 		menuBar.add(conf);
 		JMenu helpMenu = new JMenu("Help");
 		menuBar.add(helpMenu);
+		ImageIcon iconStart=null;
+		iconStart = new ImageIcon(ProKSy.class.getResource(START_ICON));
+
+        URL img_Stop = ProKSy.class.getResource(STOP_ICON);
+       
+        final ImageIcon iconStop = new ImageIcon(img_Stop);
+
+        URL img_Save = ProKSy.class.getResource(SAVE_ICON);
+       
+        final ImageIcon iconSave = new ImageIcon(img_Save);
+
+        URL img_Load = ProKSy.class.getResource(LOAD_ICON);
+       
+        final ImageIcon iconLoad = new ImageIcon(img_Load);
+		final JMenuItem menuStop = new JMenuItem("Stop",iconStop);
+		final JMenuItem menuStart = new JMenuItem("Start",iconStart);
+		final JMenuItem menuLoad = new JMenuItem("Load",iconLoad);
+		JMenuItem menuSave = new JMenuItem("Save",iconSave);
 		
-		final JMenuItem menuStop = new JMenuItem("Stop");
-		final JMenuItem menuStart = new JMenuItem("Start");
-		final JMenuItem menuLoad = new JMenuItem("Load");
-		JMenuItem menuSave = new JMenuItem("Save");
 		
 		menuStop.setEnabled(false);
 		menu.add(menuStart);
@@ -740,8 +759,10 @@ public class ProKSy {
 			}
 		});
 		menu.add(menuSave);
-		
-		JMenuItem menuExit = new JMenuItem("Exit");
+		URL img_Exit = ProKSy.class.getResource(EXIT_ICON);
+	       
+        final ImageIcon iconExit = new ImageIcon(img_Exit);
+		JMenuItem menuExit = new JMenuItem("Exit",iconExit);
 		menuExit.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				System.exit(0);
