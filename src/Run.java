@@ -148,18 +148,18 @@ public class Run extends Thread {
 					model.addRow(new Object[]{"!", "ProKSy stopped", current_time_str});
 		    		return;
 		    	}
-			    if (ProKSy.cr != null && ProKSy.cf.compareTo("") != 0 && ProKSy.cf != null && ProKSy.chkreq) {
+			    if (ProKSy.cr != null && ProKSy.cf.compareTo("") != 0 && ProKSy.cf != null && ProKSy.chkreq && clientSentence.toString().contains(ProKSy.cf)) {
 			    	clientSentence = clientSentence.replace(ProKSy.cf,ProKSy.cr);
 			    	String current_time_str = time_formatter.format(System.currentTimeMillis());
-			    	model.addRow(new Object[]{"<-", "Request replacement:  [" + ProKSy.cf + "] --> [" + ProKSy.cr + "]", current_time_str});
+			    	model.addRow(new Object[]{"↖", "Request replacement:  [" + ProKSy.cf + "] → [" + ProKSy.cr + "]", current_time_str});
 			    }
 			    
-				String FromServer = ProKSy.SendMsgServerString(clientSentence,ProKSy.rh,Integer.parseInt(ProKSy.rp));
+				String FromServer = ProKSy.SendMsgServerString(clientSentence, ProKSy.rh,Integer.parseInt(ProKSy.rp));
 				
-				if (ProKSy.sr != null && ProKSy.sf.compareTo("") != 0 && ProKSy.sf != null && ProKSy.chkres) {
+				if (ProKSy.sr != null && ProKSy.sf.compareTo("") != 0 && ProKSy.sf != null && ProKSy.chkres && FromServer.toString().contains(ProKSy.sf)) {
 					FromServer = FromServer.replace(ProKSy.sf,ProKSy.sr);
 					String current_time_str = time_formatter.format(System.currentTimeMillis());
-					model.addRow(new Object[]{"->", "Response replacement:  [" + ProKSy.sf + "] --> [" + ProKSy.sr + "]", current_time_str});
+					model.addRow(new Object[]{"↘", "Response replacement:  [" + ProKSy.sf + "] → [" + ProKSy.sr + "]", current_time_str});
 				}
 				
 			    PrintWriter output=null;

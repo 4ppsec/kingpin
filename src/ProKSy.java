@@ -227,12 +227,7 @@ public class ProKSy {
 		panMR.add(txtReqFind);
 		Checkbox justForTheFont = new Checkbox("AppSec Labs");
 		Font font = justForTheFont.getFont();
-		
-		JLabel lblMR = new JLabel("<html>In case the 'with' value remains empty, a log entry will be written,<br>if the 'replace' value was found in the Request/Response.</html>", SwingConstants.CENTER);
-		lblMR.setBounds(20, 10, 400, 50);
-		lblMR.setFont(font);
-		panMR.add(lblMR);
-		
+	
 		JLabel lblReqRep = new JLabel("with:");
 		lblReqRep.setFont(font);
 		lblReqRep.setBounds(265, 75, 75, 16);
@@ -563,7 +558,7 @@ public class ProKSy {
         final JMenuItem menuSave = new JMenuItem("Save",iconSave);
 		final JMenuItem menuLoad = new JMenuItem("Load",iconLoad);
 		final JMenuItem menuExit = new JMenuItem("Exit",iconExit);
-		final JMenuItem menuAbout = new JMenuItem("Exit",iconAbout);
+		final JMenuItem menuAbout = new JMenuItem("About",iconAbout);
 		final JMenuItem menuClear = new JMenuItem("Clear data",iconClear);
 		final JMenuItem menuClearLog = new JMenuItem("Clear Log",iconClear);
 		final JMenuItem menuClearTraffic = new JMenuItem("Clear Traffic",iconClear);
@@ -860,14 +855,14 @@ public class ProKSy {
 
       outToServer.print(msgSend + '\n');
       String current_time_str = time_formatter.format(System.currentTimeMillis());
-      modeltr.addRow(new Object[]{"<-", msgSend, sslsocket.getLocalSocketAddress().toString().replace("/",""), sslsocket.getRemoteSocketAddress().toString().replace("/",""), current_time_str});
+      modeltr.addRow(new Object[]{"↖", msgSend, sslsocket.getLocalSocketAddress().toString().replace("/",""), sslsocket.getRemoteSocketAddress().toString().replace("/",""), current_time_str});
       outToServer.flush();
       
       answer = readAll(sslsocket);
       sslsocket.close();
       
       current_time_str = time_formatter.format(System.currentTimeMillis());
-      modeltr.addRow(new Object[]{"->", answer, sslsocket.getRemoteSocketAddress().toString().replace("/",""), sslsocket.getLocalSocketAddress().toString().split("/")[1], current_time_str});
+      modeltr.addRow(new Object[]{"↘", answer, sslsocket.getRemoteSocketAddress().toString().replace("/",""), sslsocket.getLocalSocketAddress().toString().split("/")[1], current_time_str});
       return answer;
 		}
 		catch (IOException e) {
@@ -920,7 +915,7 @@ public class ProKSy {
 				start.setEnabled(false);
 				menuBar.setBackground(Color.GREEN);
 				String current_time_str = time_formatter.format(System.currentTimeMillis());
-				model.addRow(new Object[]{"!", "Started. Listening on: " + ProKSy.lh+":"+ProKSy.lp + "->" + ProKSy.rh+":"+ProKSy.rp , current_time_str});
+				model.addRow(new Object[]{"!", "Started. Listening on: " + ProKSy.lh+":"+ProKSy.lp + "→" + ProKSy.rh+":"+ProKSy.rp , current_time_str});
 				thread.isInterupt = false;
 				tabMain.setSelectedIndex(2);
 				thread.start();
@@ -945,7 +940,7 @@ public class ProKSy {
 				start.setEnabled(false);
 				menuBar.setBackground(Color.GREEN);
 				String current_time_str = time_formatter.format(System.currentTimeMillis());
-				model.addRow(new Object[]{"!", "Started. Listening on: " + ProKSy.lh+":"+ProKSy.lp + "->" + ProKSy.rh+":"+ProKSy.rp , current_time_str});
+				model.addRow(new Object[]{"!", "Started. Listening on: " + ProKSy.lh+":"+ProKSy.lp + "→" + ProKSy.rh+":"+ProKSy.rp , current_time_str});
 				thread.isInterupt = false;
 				tabMain.setSelectedIndex(2);
 				thread.start();
