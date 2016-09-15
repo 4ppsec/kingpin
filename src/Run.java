@@ -148,27 +148,20 @@ public class Run extends Thread {
 					model.addRow(new Object[]{"!", "ProKSy stopped", current_time_str});
 		    		return;
 		    	}
-			    if (ProKSy.cr != null && ProKSy.cf.compareTo("") != 0 && ProKSy.cf != null && ProKSy.cr.compareTo("") != 0 && ProKSy.chkreq) {
+			    if (ProKSy.cr != null && ProKSy.cf.compareTo("") != 0 && ProKSy.cf != null && ProKSy.chkreq) {
 			    	clientSentence = clientSentence.replace(ProKSy.cf,ProKSy.cr);
 			    	String current_time_str = time_formatter.format(System.currentTimeMillis());
 			    	model.addRow(new Object[]{"<-", "Request replacement:  [" + ProKSy.cf + "] --> [" + ProKSy.cr + "]", current_time_str});
 			    }
-			    else if (ProKSy.cf.compareTo("") != 0 && ProKSy.cf != null && (ProKSy.cr.compareTo("") == 0 || ProKSy.cr != null) && ProKSy.chkreq && clientSentence.toLowerCase().contains(ProKSy.cf.toLowerCase())) {
-			    	String current_time_str = time_formatter.format(System.currentTimeMillis());
-					model.addRow(new Object[]{"!", "Request match! [" + ProKSy.cf + "]", current_time_str});
-			    }
 			    
 				String FromServer = ProKSy.SendMsgServerString(clientSentence,ProKSy.rh,Integer.parseInt(ProKSy.rp));
 				
-				if (ProKSy.sr != null && ProKSy.sf.compareTo("") != 0 && ProKSy.sf != null && ProKSy.sr.compareTo("") != 0 && ProKSy.chkres) {
+				if (ProKSy.sr != null && ProKSy.sf.compareTo("") != 0 && ProKSy.sf != null && ProKSy.chkres) {
 					FromServer = FromServer.replace(ProKSy.sf,ProKSy.sr);
 					String current_time_str = time_formatter.format(System.currentTimeMillis());
 					model.addRow(new Object[]{"->", "Response replacement:  [" + ProKSy.sf + "] --> [" + ProKSy.sr + "]", current_time_str});
 				}
-				else if (ProKSy.sf != null && ProKSy.sf.compareTo("") != 0 && (ProKSy.sr == null || ProKSy.sr.compareTo("") == 0) && ProKSy.chkres && FromServer.toLowerCase().contains(ProKSy.sf.toLowerCase())) {
-					String current_time_str = time_formatter.format(System.currentTimeMillis());
-					model.addRow(new Object[]{"!", "Response match! [" + ProKSy.sf + "]", current_time_str});
-				}
+				
 			    PrintWriter output=null;
 			    output = new PrintWriter(new OutputStreamWriter(sslconnectionSocket.getOutputStream()));
 				    try {
