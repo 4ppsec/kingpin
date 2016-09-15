@@ -108,17 +108,14 @@ public class ProKSy {
 
 		// configuration tab
 		JPanel panConf = new JPanel();
-		frame.getContentPane().add(panConf);
 		panConf.setLayout(null);
 		
 		// match & replace tab
 		JPanel panMR = new JPanel();
-		frame.getContentPane().add(panMR);
 		panMR.setLayout(null);
 		
 		// log tab
 		JPanel panLog = new JPanel();
-		frame.getContentPane().add(panLog);
 		panLog.setLayout(null);
 		
 		tabMain.addTab("Configuration", null, panConf, null);
@@ -185,7 +182,6 @@ public class ProKSy {
         
 		// Match & Replace tab info
 		txtReqFind.setBounds(125, 73, 130, 20);
-		panConf.add(txtReqFind);
 		txtReqFind.setColumns(10);
 		txtReqFind.addFocusListener(new FocusListener() {
 			public void focusGained(FocusEvent arg0) {
@@ -235,7 +231,6 @@ public class ProKSy {
 		panMR.add(lblReqRep);
 		
 		txtReqRep.setBounds(300, 73, 130, 20);
-		panConf.add(txtReqRep);
 		txtReqRep.setColumns(10);
 		txtReqRep.addFocusListener(new FocusListener() {
 			public void focusGained(FocusEvent arg0) {
@@ -293,7 +288,6 @@ public class ProKSy {
 		panMR.add(chkReq);
 		
 		txtResFind.setBounds(125, 118, 130, 20);
-		panConf.add(txtResFind);
 		txtResFind.setColumns(10);
 		txtResFind.addFocusListener(new FocusListener() {
 			public void focusGained(FocusEvent e) {
@@ -337,7 +331,6 @@ public class ProKSy {
 		panMR.add(lblResRep);
 		
 		txtResRep.setBounds(300, 120, 130, 20);
-		panConf.add(txtResRep);
 		txtResRep.setColumns(10);
 		txtResRep.addFocusListener(new FocusListener() {
 			public void focusGained(FocusEvent e) {
@@ -655,10 +648,10 @@ public class ProKSy {
 				menuBrowseKS.setEnabled(true);
 				txtKSPass.setEditable(true);
 				btnSelectKS.setEnabled(true);
-				txtLocalPort.setEditable(true);
-				txtLocalHost.setEditable(true);
-				txtRemotePort.setEditable(true);
-				txtRemoteHost.setEditable(true);
+				txtLocalPort.setEnabled(true);
+				txtLocalHost.setEnabled(true);
+				txtRemotePort.setEnabled(true);
+				txtRemoteHost.setEnabled(true);
 				chkReq.setEnabled(true);
 				chkRes.setEnabled(true);
 				menuBar.setBackground(Color.RED);
@@ -902,11 +895,11 @@ public class ProKSy {
 				String current_time_str = time_formatter.format(System.currentTimeMillis());
 				model.addRow(new Object[]{"!", "Started. Listening on: " + ProKSy.lh+":"+ProKSy.lp + "->" + ProKSy.rh+":"+ProKSy.rp , current_time_str});
 				thread.isInterupt = false;
-				tabMain.setSelectedIndex(3);
+				tabMain.setSelectedIndex(2);
 				thread.start();
 			}
 			else{
-				tabMain.setSelectedIndex(3);
+				tabMain.setSelectedIndex(2);
 			}
 		}
 		else if (thread.getState() == Thread.State.TERMINATED) {
