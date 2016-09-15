@@ -30,7 +30,6 @@ import java.security.UnrecoverableKeyException;
 import java.security.cert.CertificateException;
 import java.text.SimpleDateFormat;
 
-import javax.imageio.ImageIO;
 import javax.net.ssl.SSLSocket;
 import javax.net.ssl.SSLSocketFactory;
 import javax.swing.BorderFactory;
@@ -61,13 +60,17 @@ public class ProKSy {
 	
 	private static final String BIG_LOGO = "appsec_logo.png";
 	private static final String SMALL_LOGO = "appsec_logo_transparent.png";
-	private static final String SAVE_ICON = "load-download-icon.png";
-	private static final String LOAD_ICON = "load-upload-icon.png";
-	private static final String START_ICON = "play-icon.png";
-	private static final String STOP_ICON = "stop-2-icon.png";
-	private static final String EXIT_ICON = "Logout-512.png";
+	private static final String START_ICON = "proksy_start_16.png";
+	private static final String STOP_ICON = "proksy_stop_16.png";
+	private static final String SAVE_ICON = "proksy_save_16.png";
+	private static final String LOAD_ICON = "proksy_load_16.png";
+	private static final String EXIT_ICON = "proksy_exit_16.png";
+	private static final String ABOUT_ICON = "proksy_about_16.png";
+	private static final String KS_ICON = "proksy_keystore_16.png";
+	private static final String CLEAR_ICON = "proksy_clear_16.png";
+	
 	protected static boolean canStart = false;
-	public static Run thread =null;
+	public static Run thread = null;
 	
 	static JTable tblLog;
 	static JTable tblTraffic;
@@ -535,32 +538,42 @@ public class ProKSy {
 		menuBar.add(conf);
 		JMenu helpMenu = new JMenu("Help");
 		menuBar.add(helpMenu);
-		ImageIcon iconStart=null;
-		iconStart = new ImageIcon(ProKSy.class.getResource(START_ICON));
-
-        URL img_Stop = ProKSy.class.getResource(STOP_ICON);
-       
-        final ImageIcon iconStop = new ImageIcon(img_Stop);
-
-        URL img_Save = ProKSy.class.getResource(SAVE_ICON);
-       
-        final ImageIcon iconSave = new ImageIcon(img_Save);
-
-        URL img_Load = ProKSy.class.getResource(LOAD_ICON);
-       
-        final ImageIcon iconLoad = new ImageIcon(img_Load);
-		final JMenuItem menuStop = new JMenuItem("Stop",iconStop);
-		final JMenuItem menuStart = new JMenuItem("Start",iconStart);
-		final JMenuItem menuLoad = new JMenuItem("Load",iconLoad);
-		JMenuItem menuSave = new JMenuItem("Save",iconSave);
 		
+		// icons
+		URL img_Start = ProKSy.class.getResource(START_ICON);
+		final ImageIcon iconStart = new ImageIcon(img_Start);
+        URL img_Stop = ProKSy.class.getResource(STOP_ICON);
+        final ImageIcon iconStop = new ImageIcon(img_Stop);
+        URL img_Save = ProKSy.class.getResource(SAVE_ICON);
+        final ImageIcon iconSave = new ImageIcon(img_Save);
+        URL img_Load = ProKSy.class.getResource(LOAD_ICON);
+        final ImageIcon iconLoad = new ImageIcon(img_Load);
+		URL img_Exit = ProKSy.class.getResource(EXIT_ICON);
+        final ImageIcon iconExit = new ImageIcon(img_Exit);
+        URL img_About = ProKSy.class.getResource(ABOUT_ICON);
+        final ImageIcon iconAbout = new ImageIcon(img_About);
+        URL img_KS = ProKSy.class.getResource(KS_ICON);
+        final ImageIcon iconKS = new ImageIcon(img_KS);
+        URL img_Clear = ProKSy.class.getResource(CLEAR_ICON);
+        final ImageIcon iconClear = new ImageIcon(img_Clear);
+        
+        
+        final JMenuItem menuStart = new JMenuItem("Start",iconStart);
+        final JMenuItem menuStop = new JMenuItem("Stop",iconStop);
+        final JMenuItem menuSave = new JMenuItem("Save",iconSave);
+		final JMenuItem menuLoad = new JMenuItem("Load",iconLoad);
+		final JMenuItem menuExit = new JMenuItem("Exit",iconExit);
+		final JMenuItem menuAbout = new JMenuItem("Exit",iconAbout);
+		final JMenuItem menuClear = new JMenuItem("Clear data",iconClear);
+		final JMenuItem menuClearLog = new JMenuItem("Clear Log",iconClear);
+		final JMenuItem menuClearTraffic = new JMenuItem("Clear Traffic",iconClear);
+		final JMenuItem menuBrowseKS = new JMenuItem("Browse KeyStore",iconKS);
 		
 		menuStop.setEnabled(false);
 		menu.add(menuStart);
 		menu.add(menuStop);
 		
-		final JMenuItem menuClear = new JMenuItem("Clear data");
-		final JMenuItem menuBrowseKS = new JMenuItem("Browse KeyStore");
+
 		
 		// file options
 		menuStart.addActionListener(new ActionListener() {
@@ -677,10 +690,9 @@ public class ProKSy {
 			}
 		});
 				
-		JMenuItem menuAbout = new JMenuItem("About");
 		menuAbout.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				JOptionPane.showMessageDialog(frame,new MessageWithLink(
+				JOptionPane.showMessageDialog(frame,new MessageWithLink (
 					    "ProKSy v0.6<br>by <a href=\"https://il.linkedin.com/in/gilad-ofir-44959919\">Gilad Ofir</a> and <a href=\"https://il.linkedin.com/in/talmelamed\">Tal Melamed</a><br><a href=\"https://appsec-labs.com\">AppSec Labs</a>"),
 					    "ProKSy",
 					    JOptionPane.PLAIN_MESSAGE,
@@ -759,10 +771,6 @@ public class ProKSy {
 			}
 		});
 		menu.add(menuSave);
-		URL img_Exit = ProKSy.class.getResource(EXIT_ICON);
-	       
-        final ImageIcon iconExit = new ImageIcon(img_Exit);
-		JMenuItem menuExit = new JMenuItem("Exit",iconExit);
 		menuExit.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				System.exit(0);
@@ -772,7 +780,6 @@ public class ProKSy {
 		
 		// settings options
 		// clear log option
-		JMenuItem menuClearLog = new JMenuItem("Clear Log");
 		conf.add(menuClearLog);
 		menuClearLog.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
@@ -782,7 +789,6 @@ public class ProKSy {
 		});
 		
 		// ClearTraffic
-		JMenuItem menuClearTraffic = new JMenuItem("Clear Traffic");
 		conf.add(menuClearTraffic);
 		menuClearTraffic.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
