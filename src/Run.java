@@ -69,38 +69,39 @@ public class Run extends Thread {
 			  
 			}catch (KeyStoreException e1) {
 				String current_time_str = time_formatter.format(System.currentTimeMillis());
-		    	model.addRow(new Object[]{"?", e1, current_time_str});
+		    	model.addRow(new Object[]{"✘", e1, current_time_str});
 		    	return false;
 			} catch (NoSuchAlgorithmException e) {
 				String current_time_str = time_formatter.format(System.currentTimeMillis());
-		    	model.addRow(new Object[]{"?", e, current_time_str});
+		    	model.addRow(new Object[]{"✘", e, current_time_str});
 		    	return false;
 			} catch (CertificateException e) {
 				String current_time_str = time_formatter.format(System.currentTimeMillis());
-		    	model.addRow(new Object[]{"?", e, current_time_str});
+		    	model.addRow(new Object[]{"✘", e, current_time_str});
 		    	return false;
 			} catch (FileNotFoundException e) {
 				String current_time_str = time_formatter.format(System.currentTimeMillis());
-		    	model.addRow(new Object[]{"?", e, current_time_str});
+		    	model.addRow(new Object[]{"✘", e, current_time_str});
 		    	return false;
 			} catch (IOException e) {
 				String current_time_str = time_formatter.format(System.currentTimeMillis());
-		    	model.addRow(new Object[]{"?", e, current_time_str});
+		    	model.addRow(new Object[]{"✘", e, current_time_str});
 		    	return false;
 			} catch (UnrecoverableKeyException e) {
 				String current_time_str = time_formatter.format(System.currentTimeMillis());
-		    	model.addRow(new Object[]{"?", e, current_time_str});
+		    	model.addRow(new Object[]{"✘", e, current_time_str});
 		    	return false;
 			} catch (KeyManagementException e) {
+				
 				String current_time_str = time_formatter.format(System.currentTimeMillis());
-		    	model.addRow(new Object[]{"?", e, current_time_str});
+		    	model.addRow(new Object[]{"✘", e, current_time_str});
 		    	return false;
 			}
 			isInit=true;
 			return true;
 	 } catch (Exception e) {
 		String current_time_str = time_formatter.format(System.currentTimeMillis());
-	    model.addRow(new Object[]{"?", e, current_time_str});
+	    model.addRow(new Object[]{"✘", e, current_time_str});
 	    return false;
 	 }
 		
@@ -115,7 +116,7 @@ public class Run extends Thread {
 		   SimpleDateFormat time_formatter = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss");
 		   DefaultTableModel model = (DefaultTableModel) ProKSy.tblLog.getModel();
 		   String current_time_str = time_formatter.format(System.currentTimeMillis());
-		   model.addRow(new Object[]{"?", e, current_time_str});
+		   model.addRow(new Object[]{"✘", e, current_time_str});
 	   }
 		return sb.toString();
 	 }
@@ -132,7 +133,7 @@ public class Run extends Thread {
 		    	}
 		    	catch(Exception ea){
 		    		String current_time_str = time_formatter.format(System.currentTimeMillis());
-		    	    model.addRow(new Object[]{"?", ea, current_time_str});
+		    	    model.addRow(new Object[]{"✘", ea, current_time_str});
 		    		sslconnectionSocket.close();
 		    		sslconnectionSocket=null;
 		    		HacmeServerSocketSSL.close();
@@ -145,21 +146,21 @@ public class Run extends Thread {
 		    		HacmeServerSocketSSL.close();
 		    		HacmeServerSocketSSL=null;
 		    		String current_time_str = time_formatter.format(System.currentTimeMillis());
-					model.addRow(new Object[]{"!", "ProKSy stopped", current_time_str});
+					model.addRow(new Object[]{"■", "ProKSy stopped", current_time_str});
 		    		return;
 		    	}
 			    if (ProKSy.cr != null && ProKSy.cf.compareTo("") != 0 && ProKSy.cf != null && ProKSy.chkreq && clientSentence.toString().contains(ProKSy.cf)) {
 			    	clientSentence = clientSentence.replace(ProKSy.cf,ProKSy.cr);
 			    	String current_time_str = time_formatter.format(System.currentTimeMillis());
-			    	model.addRow(new Object[]{"↖", "Request replacement:  [" + ProKSy.cf + "] → [" + ProKSy.cr + "]", current_time_str});
+			    	model.addRow(new Object[]{"✔", "Request replacement:  [" + ProKSy.cf + "] → [" + ProKSy.cr + "]", current_time_str});
 			    }
-			    
+			   
 				String FromServer = ProKSy.SendMsgServerString(clientSentence, ProKSy.rh,Integer.parseInt(ProKSy.rp));
 				
 				if (ProKSy.sr != null && ProKSy.sf.compareTo("") != 0 && ProKSy.sf != null && ProKSy.chkres && FromServer.toString().contains(ProKSy.sf)) {
 					FromServer = FromServer.replace(ProKSy.sf,ProKSy.sr);
 					String current_time_str = time_formatter.format(System.currentTimeMillis());
-					model.addRow(new Object[]{"↘", "Response replacement:  [" + ProKSy.sf + "] → [" + ProKSy.sr + "]", current_time_str});
+					model.addRow(new Object[]{"✔", "Response replacement:  [" + ProKSy.sf + "] → [" + ProKSy.sr + "]", current_time_str});
 				}
 				
 			    PrintWriter output=null;
@@ -171,14 +172,14 @@ public class Run extends Thread {
 			        } 
 			        catch (Exception e) {
 			        	String current_time_str = time_formatter.format(System.currentTimeMillis());
-				    	model.addRow(new Object[]{"?", e, current_time_str});
+				    	model.addRow(new Object[]{"✘", e, current_time_str});
 			            //System.out.println(e);
 			        }
 		    }
 			
 		 } catch (Exception e) {
 				String current_time_str = time_formatter.format(System.currentTimeMillis());
-			    model.addRow(new Object[]{"?", e, current_time_str});
+			    model.addRow(new Object[]{"✘", e, current_time_str});
 		 }
 	}
 }

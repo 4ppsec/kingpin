@@ -167,9 +167,9 @@ public class ProKSy {
 		model.addColumn("Message");
 		model.addColumn("Time");
 		tblLog.setAutoResizeMode( JTable.AUTO_RESIZE_OFF );
-		tblLog.getColumnModel().getColumn(0).setPreferredWidth(15);
+		tblLog.getColumnModel().getColumn(0).setPreferredWidth(25);
 		tblLog.getColumnModel().getColumn(1).setPreferredWidth(295);
-		tblLog.getColumnModel().getColumn(2).setPreferredWidth(120);		
+		tblLog.getColumnModel().getColumn(2).setPreferredWidth(120);
         
 		frame.addComponentListener(new ComponentAdapter() {
             public void componentResized(ComponentEvent e) {
@@ -181,7 +181,7 @@ public class ProKSy {
                 tblTraffic.getColumnModel().getColumn(3).setPreferredWidth((int) Math.round(frame.getContentPane().getSize().getWidth()*0.16f));
                 tblTraffic.getColumnModel().getColumn(4).setPreferredWidth((int) Math.round(frame.getContentPane().getSize().getWidth()*0.27f));
                 
-                tblLog.getColumnModel().getColumn(0).setPreferredWidth((int) Math.round(frame.getContentPane().getSize().getWidth()*0.035f));
+                tblLog.getColumnModel().getColumn(0).setPreferredWidth((int) Math.round(frame.getContentPane().getSize().getWidth()*0.04f));
                 tblLog.getColumnModel().getColumn(1).setPreferredWidth((int) Math.round(frame.getContentPane().getSize().getWidth()*0.67f));
                 tblLog.getColumnModel().getColumn(2).setPreferredWidth((int) Math.round(frame.getContentPane().getSize().getWidth()*0.27f));
             }
@@ -189,7 +189,18 @@ public class ProKSy {
         
         
 		// Match & Replace tab info
-		txtReqFind.setBounds(125, 73, 130, 20);
+		txtReqFind.setEditable(false);
+		panMR.add(txtReqFind);
+		Checkbox justForTheFont = new Checkbox("AppSec Labs");
+		Font font = justForTheFont.getFont();
+		
+		JLabel mrHelp = new JLabel("<html>You can match & replace traffic while ProKSy is up, at any time.<br>"
+				+ "Simply modify the text feilds below with the data you want to find/replace.</html>");
+		mrHelp.setFont(font);
+		mrHelp.setBounds(12,5,425,50);
+		panMR.add(mrHelp);
+		
+		txtReqFind.setBounds(137, 73, 130, 20);
 		txtReqFind.setColumns(10);
 		txtReqFind.addFocusListener(new FocusListener() {
 			public void focusGained(FocusEvent arg0) {
@@ -223,17 +234,13 @@ public class ProKSy {
 					  cf = "";
 			  }
 		});
-		txtReqFind.setEditable(false);
-		panMR.add(txtReqFind);
-		Checkbox justForTheFont = new Checkbox("AppSec Labs");
-		Font font = justForTheFont.getFont();
 	
 		JLabel lblReqRep = new JLabel("with:");
 		lblReqRep.setFont(font);
-		lblReqRep.setBounds(265, 75, 75, 16);
+		lblReqRep.setBounds(275, 74, 75, 16);
 		panMR.add(lblReqRep);
 		
-		txtReqRep.setBounds(300, 73, 130, 20);
+		txtReqRep.setBounds(310, 73, 130, 20);
 		txtReqRep.setColumns(10);
 		txtReqRep.addFocusListener(new FocusListener() {
 			public void focusGained(FocusEvent arg0) {
@@ -270,6 +277,8 @@ public class ProKSy {
 		txtReqRep.setEditable(false);
 		panMR.add(txtReqRep);
 		
+		
+		
 		final Checkbox chkReq = new Checkbox("Request replace:");
 		chkReq.setBounds(10, 75, 110, 16);
 		chkReq.addItemListener(new ItemListener() {
@@ -290,7 +299,7 @@ public class ProKSy {
 	     });
 		panMR.add(chkReq);
 		
-		txtResFind.setBounds(125, 118, 130, 20);
+		txtResFind.setBounds(137, 118, 130, 20);
 		txtResFind.setColumns(10);
 		txtResFind.addFocusListener(new FocusListener() {
 			public void focusGained(FocusEvent e) {
@@ -330,10 +339,10 @@ public class ProKSy {
 		
 		JLabel lblResRep = new JLabel("with:");
 		lblResRep.setFont(font);
-		lblResRep.setBounds(265, 118, 75, 16);
+		lblResRep.setBounds(275, 118, 75, 16);
 		panMR.add(lblResRep);
 		
-		txtResRep.setBounds(300, 120, 130, 20);
+		txtResRep.setBounds(310, 118, 130, 20);
 		txtResRep.setColumns(10);
 		txtResRep.addFocusListener(new FocusListener() {
 			public void focusGained(FocusEvent e) {
@@ -371,8 +380,8 @@ public class ProKSy {
 		txtResRep.setEditable(false);
 		panMR.add(txtResRep);
 		
-		final Checkbox chkRes = new Checkbox("Respone replace:");
-		chkRes.setBounds(10, 120, 110, 16);
+		final Checkbox chkRes = new Checkbox("Response replace:");
+		chkRes.setBounds(10, 120, 120, 16);
 		chkRes.addItemListener(new ItemListener() {
 	         public void itemStateChanged(ItemEvent e) {
 	        	 if (e.getStateChange() == ItemEvent.SELECTED) {
@@ -511,7 +520,7 @@ public class ProKSy {
 						SimpleDateFormat time_formatter = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss");
 						DefaultTableModel model = (DefaultTableModel) tblLog.getModel();
 						String current_time_str = time_formatter.format(System.currentTimeMillis());
-				    	model.addRow(new Object[]{"!","Could not open file...", current_time_str});
+				    	model.addRow(new Object[]{"✇","Could not open file...", current_time_str});
 				    	tabMain.setSelectedIndex(3);
 					}
 	            } else {
@@ -615,27 +624,27 @@ public class ProKSy {
 						doStart(menuBar, menuStart, menuStop, menuClear, menuBrowseKS, menuLoad, txtLocalHost, txtLocalPort, txtRemoteHost, txtRemotePort, txtKSPass, btnSelectKS, tabMain);
 					} catch (UnrecoverableKeyException e1) {
 						String current_time_str = time_formatter.format(System.currentTimeMillis());
-				    	model.addRow(new Object[]{"?", e1, current_time_str});
+				    	model.addRow(new Object[]{"✘", e1, current_time_str});
 				    	tabMain.setSelectedIndex(3);
 					} catch (KeyManagementException e1) {
 						String current_time_str = time_formatter.format(System.currentTimeMillis());
-				    	model.addRow(new Object[]{"?", e1, current_time_str});
+				    	model.addRow(new Object[]{"✘", e1, current_time_str});
 				    	tabMain.setSelectedIndex(3);
 					} catch (NoSuchAlgorithmException e1) {
 						String current_time_str = time_formatter.format(System.currentTimeMillis());
-				    	model.addRow(new Object[]{"?", e1, current_time_str});
+				    	model.addRow(new Object[]{"✘", e1, current_time_str});
 				    	tabMain.setSelectedIndex(3);
 					} catch (KeyStoreException e1) {
 						String current_time_str = time_formatter.format(System.currentTimeMillis());
-				    	model.addRow(new Object[]{"?", e1, current_time_str});
+				    	model.addRow(new Object[]{"✘", e1, current_time_str});
 				    	tabMain.setSelectedIndex(3);
 					} catch (CertificateException e1) {
 						String current_time_str = time_formatter.format(System.currentTimeMillis());
-				    	model.addRow(new Object[]{"?", e1, current_time_str});
+				    	model.addRow(new Object[]{"✘", e1, current_time_str});
 				    	tabMain.setSelectedIndex(3);
 					} catch (IOException e1) {
 						String current_time_str = time_formatter.format(System.currentTimeMillis());
-				    	model.addRow(new Object[]{"?", e1, current_time_str});
+				    	model.addRow(new Object[]{"✘", e1, current_time_str});
 				    	tabMain.setSelectedIndex(3);
 					}
 			}
@@ -657,15 +666,15 @@ public class ProKSy {
 					sslsocket.close();
 				} catch (NumberFormatException e2) {
 					String current_time_str = time_formatter.format(System.currentTimeMillis());
-			    	model.addRow(new Object[]{"?", e2, current_time_str});
+			    	model.addRow(new Object[]{"✘", e2, current_time_str});
 			    	tabMain.setSelectedIndex(3);
 				} catch (UnknownHostException e2) {
 					String current_time_str = time_formatter.format(System.currentTimeMillis());
-			    	model.addRow(new Object[]{"?", e2, current_time_str});
+			    	model.addRow(new Object[]{"✘", e2, current_time_str});
 			    	tabMain.setSelectedIndex(3);
 				} catch (Exception e2) {
 					String current_time_str = time_formatter.format(System.currentTimeMillis());
-			    	model.addRow(new Object[]{"?", e2, current_time_str});
+			    	model.addRow(new Object[]{"✘", e2, current_time_str});
 			    	tabMain.setSelectedIndex(3);
 				}
 				menuStop.setEnabled(false);
@@ -688,7 +697,9 @@ public class ProKSy {
 		menuAbout.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				JOptionPane.showMessageDialog(frame,new MessageWithLink (
-					    "ProKSy v0.6<br>by <a href=\"https://il.linkedin.com/in/gilad-ofir-44959919\">Gilad Ofir</a> and <a href=\"https://il.linkedin.com/in/talmelamed\">Tal Melamed</a><br><a href=\"https://appsec-labs.com\">AppSec Labs</a>"),
+					    "ProKSy v0.6<br>© <a href=\"https://il.linkedin.com/in/gilad-ofir-44959919\">Gilad Ofir</a>"
+					    + " and <a href=\"https://il.linkedin.com/in/talmelamed\">Tal Melamed</a>"
+					    + "<br><a href=\"https://appsec-labs.com\">AppSec Labs</a>"),
 					    "ProKSy",
 					    JOptionPane.PLAIN_MESSAGE,
 					    icon);
@@ -727,15 +738,15 @@ public class ProKSy {
 				    		else { }
 				    	}
 				    String current_time_str = time_formatter.format(System.currentTimeMillis());
-			    	model.addRow(new Object[]{"!", "Data loaded from properties file.", current_time_str});
+			    	model.addRow(new Object[]{"✔ ", "Data loaded from properties file.", current_time_str});
 			    	tabMain.setSelectedIndex(0);
 				} catch (FileNotFoundException e1) {
 					String current_time_str = time_formatter.format(System.currentTimeMillis());
-			    	model.addRow(new Object[]{"?", e1, current_time_str});
+			    	model.addRow(new Object[]{"✘", e1, current_time_str});
 			    	tabMain.setSelectedIndex(3);
 				} catch (IOException e1) {
 					String current_time_str = time_formatter.format(System.currentTimeMillis());
-			    	model.addRow(new Object[]{"?", e1, current_time_str});
+			    	model.addRow(new Object[]{"✘", e1, current_time_str});
 			    	tabMain.setSelectedIndex(3);
 				}
 			}
@@ -756,11 +767,11 @@ public class ProKSy {
 					writer.println("RemotePort="+txtRemotePort.getText());
 					writer.println("KSPath="+txtKSPath.getText());
 					String current_time_str = time_formatter.format(System.currentTimeMillis());
-			    	model.addRow(new Object[]{"!", "Data saved.", current_time_str});
+			    	model.addRow(new Object[]{"✔", "Data saved.", current_time_str});
 					writer.close();
 				} catch (FileNotFoundException e1) {
 					String current_time_str = time_formatter.format(System.currentTimeMillis());
-			    	model.addRow(new Object[]{"?", e1, current_time_str});
+			    	model.addRow(new Object[]{"✘", e1, current_time_str});
 			    	tabMain.setSelectedIndex(3);
 				}
 			}
@@ -869,7 +880,7 @@ public class ProKSy {
 			SimpleDateFormat time_formatter = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss");
 			DefaultTableModel model = (DefaultTableModel) tblLog.getModel();
 			String current_time_str = time_formatter.format(System.currentTimeMillis());
-	    	model.addRow(new Object[]{"?", e, current_time_str});
+	    	model.addRow(new Object[]{"✘", e, current_time_str});
 		    return "";
 		}
 	}
@@ -885,7 +896,7 @@ public class ProKSy {
 		   SimpleDateFormat time_formatter = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss");
 		   DefaultTableModel model = (DefaultTableModel) ProKSy.tblLog.getModel();
 		   String current_time_str = time_formatter.format(System.currentTimeMillis());
-		   model.addRow(new Object[]{"?", e, current_time_str});
+		   model.addRow(new Object[]{"✘", e, current_time_str});
 	  }
 		return sb.toString();
 	 }
@@ -915,13 +926,13 @@ public class ProKSy {
 				start.setEnabled(false);
 				menuBar.setBackground(Color.GREEN);
 				String current_time_str = time_formatter.format(System.currentTimeMillis());
-				model.addRow(new Object[]{"!", "Started. Listening on: " + ProKSy.lh+":"+ProKSy.lp + "→" + ProKSy.rh+":"+ProKSy.rp , current_time_str});
+				model.addRow(new Object[]{"►", "Started. Listening on: " + ProKSy.lh+":"+ProKSy.lp + "→" + ProKSy.rh+":"+ProKSy.rp , current_time_str});
 				thread.isInterupt = false;
 				tabMain.setSelectedIndex(2);
 				thread.start();
 			}
 			else{
-				tabMain.setSelectedIndex(2);
+				tabMain.setSelectedIndex(3);
 			}
 		}
 		else if (thread.getState() == Thread.State.TERMINATED) {
@@ -940,7 +951,7 @@ public class ProKSy {
 				start.setEnabled(false);
 				menuBar.setBackground(Color.GREEN);
 				String current_time_str = time_formatter.format(System.currentTimeMillis());
-				model.addRow(new Object[]{"!", "Started. Listening on: " + ProKSy.lh+":"+ProKSy.lp + "→" + ProKSy.rh+":"+ProKSy.rp , current_time_str});
+				model.addRow(new Object[]{"►", "Started. Listening on: " + ProKSy.lh+":"+ProKSy.lp + "→" + ProKSy.rh+":"+ProKSy.rp , current_time_str});
 				thread.isInterupt = false;
 				tabMain.setSelectedIndex(2);
 				thread.start();
