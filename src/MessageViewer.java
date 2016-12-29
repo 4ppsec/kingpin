@@ -14,7 +14,6 @@ public class MessageViewer extends JFrame {
 	private static final long serialVersionUID = 1L;
 	private ScrollPane contentPane;
 	static String message;
-	static JFrame parent;
 	//static JTextArea textArea = new JTextArea();
 	/**
 	 * Launch the application.
@@ -23,7 +22,7 @@ public class MessageViewer extends JFrame {
 		EventQueue.invokeLater(new Runnable() {
 			public void run() {
 				try {
-					MessageViewer frame = new MessageViewer(message,parent);
+					MessageViewer frame = new MessageViewer(message);
 					frame.setVisible(true);	
 							
 				} catch (Exception e) {
@@ -37,20 +36,12 @@ public class MessageViewer extends JFrame {
 	 * Create the frame.
 	 * @param message2 
 	 */
-	public MessageViewer(String message2, JFrame frame) {
-		parent=frame;
+	public MessageViewer(String message2) {
 		JTextArea textArea = new JTextArea();
 		setTitle("ProKSy Traffic Viewer");
 		//setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		setBounds(100, 100, 462, 433);
-		this.addWindowListener(new WindowAdapter() {
-		     public void windowClosing(WindowEvent ev) {
-		        
-		     ev.getWindow().setVisible(false);
-		             parent.setVisible(true);
-		            }
-		                    
-		   });
+		
 		contentPane = new ScrollPane();
 		//contentPane.setLayout(new BorderLayout(0, 0));
 		textArea.setLineWrap(true);
@@ -63,7 +54,5 @@ public class MessageViewer extends JFrame {
 		setContentPane(contentPane);
 		pack();
 	}
-
-
 
 }
