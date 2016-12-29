@@ -9,29 +9,38 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.ComponentAdapter;
 import java.awt.event.ComponentEvent;
+import java.awt.event.ComponentListener;
 import java.awt.event.FocusEvent;
 import java.awt.event.FocusListener;
 import java.awt.event.ItemEvent;
 import java.awt.event.ItemListener;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
+import java.awt.event.MouseListener;
+import java.awt.event.WindowAdapter;
+import java.awt.event.WindowEvent;
+import java.io.BufferedInputStream;
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
-import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
 import java.io.PrintWriter;
+
 import java.net.URL;
 import java.net.UnknownHostException;
+import javax.net.ssl.SSLSocket;
+import javax.net.ssl.SSLSocketFactory;
+
 import java.security.KeyManagementException;
 import java.security.KeyStoreException;
 import java.security.NoSuchAlgorithmException;
 import java.security.UnrecoverableKeyException;
 import java.security.cert.CertificateException;
+
 import java.text.SimpleDateFormat;
 
-import javax.net.ssl.SSLSocket;
-import javax.net.ssl.SSLSocketFactory;
 import javax.swing.BorderFactory;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
@@ -55,6 +64,7 @@ import javax.swing.border.Border;
 import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
 import javax.swing.table.DefaultTableModel;
+import javax.swing.AbstractAction;
 
 public class ProKSy {
 	
@@ -68,9 +78,11 @@ public class ProKSy {
 	private static final String ABOUT_ICON = "proksy_about_16.png";
 	private static final String KS_ICON = "proksy_keystore_16.png";
 	private static final String CLEAR_ICON = "proksy_clear_16.png";
-	
+	public static ProKSy window;
+	public static Color mycolor = null;
 	protected static boolean canStart = false;
 	public static Run thread = null;
+	public static JFrame frame;
 	
 	static JTable tblLog;
 	static JTable tblTraffic;
@@ -101,10 +113,11 @@ public class ProKSy {
 		tblTraffic = new JTable(modeltr);
 		tblLog = new JTable(model);
 		final JScrollPane scrollPaneTraffic = new JScrollPane(tblTraffic, ScrollPaneConstants.VERTICAL_SCROLLBAR_AS_NEEDED, ScrollPaneConstants.HORIZONTAL_SCROLLBAR_AS_NEEDED);
+	
 		final JScrollPane scrollPaneLog = new JScrollPane(tblLog, ScrollPaneConstants.VERTICAL_SCROLLBAR_AS_NEEDED, ScrollPaneConstants.HORIZONTAL_SCROLLBAR_AS_NEEDED);
-		
         // main frame
-        final JFrame frame = new JFrame("ProKSy by AppSec Labs");
+        frame = new JFrame("ProKSy by AppSec Labs");
+        ProKSy.mycolor = frame.getBackground();
         final Border borderDefault =  UIManager.getBorder("TextField.border");
 		
 		final JTextField txtReqFind = new JTextField();
@@ -161,7 +174,27 @@ public class ProKSy {
 		tblTraffic.getColumnModel().getColumn(2).setPreferredWidth(73);
 		tblTraffic.getColumnModel().getColumn(3).setPreferredWidth(73);
 		tblTraffic.getColumnModel().getColumn(4).setPreferredWidth(120);
-		
+		//tblTraffic.setEnabled(false);
+		tblTraffic.addMouseListener(new MouseAdapter() {
+		    public void mousePressed(MouseEvent me) {
+		    	int selectedrow = tblTraffic.getSelectedRow();
+	       		if (selectedrow>=0 && me.getClickCount() == 2) {
+	       			//frame.setVisible(false);
+	       			frame.setEnabled(false);
+	       			//System.out.println(tblTraffic.getValueAt(selectedrow, 1).toString());
+	       			MessageViewer mv = new MessageViewer(tblTraffic.getValueAt(selectedrow, 1).toString());
+	       			mv.setVisible(true);
+	       			mv.addWindowListener(new WindowAdapter() {
+					    @Override
+					    public void windowClosing(WindowEvent windowEvent) {
+					    	mv.dispose();
+					    	ProKSy.frame.setEnabled(true);
+					    }
+					});
+		        }
+		    }
+		});
+		 
 		//log
 		model.addColumn("");
 		model.addColumn("Message");
@@ -186,7 +219,25 @@ public class ProKSy {
                 tblLog.getColumnModel().getColumn(2).setPreferredWidth((int) Math.round(frame.getContentPane().getSize().getWidth()*0.27f));
             }
         });
-        
+		tblLog.addMouseListener(new MouseAdapter() {
+		    public void mousePressed(MouseEvent me) {
+		    	int selectedrow = tblLog.getSelectedRow();
+	       		if (selectedrow>=0 && me.getClickCount() == 2) {
+	       			//frame.setVisible(false);
+	       			frame.setEnabled(false);
+	       			//System.out.println(tblTraffic.getValueAt(selectedrow, 1).toString());
+	       			MessageViewer mv = new MessageViewer(tblLog.getValueAt(selectedrow, 1).toString());
+	       			mv.setVisible(true);
+	       			mv.addWindowListener(new WindowAdapter() {
+					    @Override
+					    public void windowClosing(WindowEvent windowEvent) {
+					    	mv.dispose();
+					    	ProKSy.frame.setEnabled(true);
+					    }
+					});
+		        }
+		    }
+		});
         
 		// Match & Replace tab info
 		txtReqFind.setEditable(false);
@@ -540,6 +591,32 @@ public class ProKSy {
 		menuBar.add(menu);
 		JMenu conf = new JMenu("Settings");
 		menuBar.add(conf);
+		
+		JMenu mnView = new JMenu("View");
+		menuBar.add(mnView);
+		
+		JMenuItem mntmView = new JMenuItem("View in Separate Window");
+		mntmView.addActionListener(new ActionListener() {
+			 public void actionPerformed(java.awt.event.ActionEvent evt) {
+			     
+		       		int selectedrow = tblTraffic.getSelectedRow();
+		       		if(selectedrow>=0) {
+		       			//frame.setVisible(false);
+		       			frame.setEnabled(false);
+		       			//System.out.println(tblTraffic.getValueAt(selectedrow, 1).toString());
+		       			MessageViewer mv = new MessageViewer(tblTraffic.getValueAt(selectedrow, 1).toString());
+		       			mv.setVisible(true);
+		       			mv.addWindowListener(new WindowAdapter() {
+						    @Override
+						    public void windowClosing(WindowEvent windowEvent) {
+						    	mv.dispose();
+						    	ProKSy.frame.setEnabled(true);
+						    }
+						});
+		       		}
+			 }
+		});
+		mnView.add(mntmView);
 		JMenu helpMenu = new JMenu("Help");
 		menuBar.add(helpMenu);
 		
@@ -696,8 +773,8 @@ public class ProKSy {
 				
 		menuAbout.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				JOptionPane.showMessageDialog(frame,new MessageWithLink (
-					    "ProKSy v0.6<br>© <a href=\"https://il.linkedin.com/in/gilad-ofir-44959919\">Gilad Ofir</a>"
+				JOptionPane.showMessageDialog(frame,new About (
+					    "ProKSy v0.7<br>© <a href=\"https://il.linkedin.com/in/gilad-ofir-44959919\">Gilad Ofir</a>"
 					    + " and <a href=\"https://il.linkedin.com/in/talmelamed\">Tal Melamed</a>"
 					    + "<br><a href=\"https://appsec-labs.com\">AppSec Labs</a>"),
 					    "ProKSy",
@@ -851,9 +928,9 @@ public class ProKSy {
 	}
 
 	// sending message to remote host
-	static String SendMsgServerString(String msgSend,String Remote,int port) {
+	static String SendMsgServerString(String msgSend, String Remote, int port) {
 		try{
-		  SimpleDateFormat time_formatter = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss");
+			SimpleDateFormat time_formatter = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss");
 			DefaultTableModel modeltr = (DefaultTableModel) ProKSy.tblTraffic.getModel();
 			SSLSocket sslsocket=null;
 			PrintWriter outToServer=null;
@@ -886,18 +963,29 @@ public class ProKSy {
 	}
 	
 	// read data from remote host
-	public static String readAll(SSLSocket socket) throws IOException {
-		BufferedReader reader = new BufferedReader(new InputStreamReader(socket.getInputStream()));
+	public static String readAll(SSLSocket sslsocket) throws IOException {
 		StringBuilder sb = new StringBuilder();
-	  try{
-		  sb.append( reader.readLine());
-	  }
-	  catch(Exception e){
+	    int count;
+		try {
+			BufferedInputStream  reader = new BufferedInputStream (sslsocket.getInputStream());
+			count=reader.read();
+			int ad = reader.available();
+			sb.append((char)count);
+			while(ad>0){
+				
+				count=reader.read();
+				sb.append((char)count);
+				ad = reader.available();
+			
+			}
+		
+		} 
+	    catch(Exception e){
 		   SimpleDateFormat time_formatter = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss");
 		   DefaultTableModel model = (DefaultTableModel) ProKSy.tblLog.getModel();
 		   String current_time_str = time_formatter.format(System.currentTimeMillis());
 		   model.addRow(new Object[]{"✘", e, current_time_str});
-	  }
+	    }
 		return sb.toString();
 	 }
 	
@@ -965,5 +1053,16 @@ public class ProKSy {
 	
 	public static void main(String[] args) throws Exception{
 		init();
+	}
+	
+	@SuppressWarnings("unused")
+	private class SwingAction extends AbstractAction {
+		private static final long serialVersionUID = -2734100795685226202L;
+		public SwingAction() {
+			putValue(NAME, "SwingAction");
+			putValue(SHORT_DESCRIPTION, "Some short description");
+		}
+		public void actionPerformed(ActionEvent e) {
+		}
 	}
 }

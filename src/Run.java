@@ -1,10 +1,10 @@
-import java.io.BufferedReader;
+import java.io.BufferedInputStream;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
-import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
 import java.io.PrintWriter;
+
 import java.security.KeyManagementException;
 import java.security.KeyStore;
 import java.security.KeyStoreException;
@@ -23,12 +23,11 @@ import javax.net.ssl.TrustManager;
 import javax.net.ssl.X509TrustManager;
 import javax.swing.table.DefaultTableModel;
 
-
 public class Run extends Thread {
 	
 	volatile boolean stop = false;
 	static SSLSocket sslconnectionSocket = null;
-	static SSLServerSocket HacmeServerSocketSSL = null;
+	static SSLServerSocket ServerSocketSSL = null;
 	public  Boolean isInit = false;
 	public  Boolean isInterupt = false;
 	public boolean initialize() {
@@ -64,7 +63,7 @@ public class Run extends Thread {
 			    factory = context.getServerSocketFactory();
 		
 			    int port = Integer.parseInt(ProKSy.lp);
-			    HacmeServerSocketSSL = (SSLServerSocket)factory.createServerSocket(port);
+			    ServerSocketSSL = (SSLServerSocket)factory.createServerSocket(port);
 			   // SSLSocket sslconnectionSocket=null;
 			  
 			}catch (KeyStoreException e1) {
@@ -106,27 +105,41 @@ public class Run extends Thread {
 	 }
 		
 	}
-	public static String readAll(SSLSocket socket) throws IOException {
-		BufferedReader reader = new BufferedReader(new InputStreamReader(socket.getInputStream()));
-		StringBuilder sb = new StringBuilder();
-	   try{
-		sb.append( reader.readLine());
-	   }
-	   catch(Exception e){
+	
+	//ssl
+	public static String readAll(SSLSocket sslsocket) throws IOException {
+	    StringBuilder sb = new StringBuilder();
+	    int count;
+		try {
+			BufferedInputStream  reader = new BufferedInputStream (sslsocket.getInputStream());
+			count=reader.read();
+			int ad = reader.available();
+			sb.append((char)count);
+			while(ad>0){
+				
+				count=reader.read();
+				sb.append((char)count);
+				ad = reader.available();
+			
+			}
+		
+		} 
+	    catch(Exception e){
 		   SimpleDateFormat time_formatter = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss");
 		   DefaultTableModel model = (DefaultTableModel) ProKSy.tblLog.getModel();
 		   String current_time_str = time_formatter.format(System.currentTimeMillis());
 		   model.addRow(new Object[]{"✘", e, current_time_str});
-	   }
+	    }
 		return sb.toString();
 	 }
+	
 	@Override
 	public void run() {
 		SimpleDateFormat time_formatter = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss");
 		DefaultTableModel model = (DefaultTableModel) ProKSy.tblLog.getModel();
 		try {
 			while (!Thread.interrupted()) {
-		    	sslconnectionSocket = (SSLSocket) HacmeServerSocketSSL.accept();
+		    	sslconnectionSocket = (SSLSocket) ServerSocketSSL.accept();
 		    	String clientSentence="";
 		    	try{
 			     clientSentence = readAll(sslconnectionSocket);
@@ -136,15 +149,15 @@ public class Run extends Thread {
 		    	    model.addRow(new Object[]{"✘", ea, current_time_str});
 		    		sslconnectionSocket.close();
 		    		sslconnectionSocket=null;
-		    		HacmeServerSocketSSL.close();
-		    		HacmeServerSocketSSL=null;
-		    		 return;
+		    		ServerSocketSSL.close();
+		    		ServerSocketSSL=null;
+		    		return;
 		    	}
 		    	if(isInterupt){
 		    		sslconnectionSocket.close();
 		    		sslconnectionSocket=null;
-		    		HacmeServerSocketSSL.close();
-		    		HacmeServerSocketSSL=null;
+		    		ServerSocketSSL.close();
+		    		ServerSocketSSL=null;
 		    		String current_time_str = time_formatter.format(System.currentTimeMillis());
 					model.addRow(new Object[]{"■", "ProKSy stopped", current_time_str});
 		    		return;
@@ -154,7 +167,7 @@ public class Run extends Thread {
 			    	String current_time_str = time_formatter.format(System.currentTimeMillis());
 			    	model.addRow(new Object[]{"✔", "Request replacement:  [" + ProKSy.cf + "] → [" + ProKSy.cr + "]", current_time_str});
 			    }
-			   
+			    
 				String FromServer = ProKSy.SendMsgServerString(clientSentence, ProKSy.rh,Integer.parseInt(ProKSy.rp));
 				
 				if (ProKSy.sr != null && ProKSy.sf.compareTo("") != 0 && ProKSy.sf != null && ProKSy.chkres && FromServer.toString().contains(ProKSy.sf)) {
@@ -165,10 +178,13 @@ public class Run extends Thread {
 				
 			    PrintWriter output=null;
 			    output = new PrintWriter(new OutputStreamWriter(sslconnectionSocket.getOutputStream()));
+			    
 				    try {
 			      	  //send msg to client
 			      	  output.print(FromServer + '\n');
-			      	  output.flush();  
+			      	  output.flush(); 
+			      	  sslconnectionSocket.close();
+			      	 // ServerSocketSSL.close();
 			        } 
 			        catch (Exception e) {
 			        	String current_time_str = time_formatter.format(System.currentTimeMillis());
