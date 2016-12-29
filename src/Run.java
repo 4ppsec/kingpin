@@ -4,7 +4,7 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.OutputStreamWriter;
 import java.io.PrintWriter;
-import java.net.Socket;
+
 import java.security.KeyManagementException;
 import java.security.KeyStore;
 import java.security.KeyStoreException;
@@ -28,7 +28,6 @@ public class Run extends Thread {
 	volatile boolean stop = false;
 	static SSLSocket sslconnectionSocket = null;
 	static SSLServerSocket ServerSocketSSL = null;
-	static Socket tcpconnectionSocket = null;
 	public  Boolean isInit = false;
 	public  Boolean isInterupt = false;
 	public boolean initialize() {
@@ -45,7 +44,7 @@ public class Run extends Thread {
 			            java.security.cert.X509Certificate[] certs, String authType) {
 			            } 
 			        public void checkServerTrusted( 
-			            java.security.cert.X509Certificate [] certs, String authType) {
+			            java.security.cert.X509Certificate[] certs, String authType) {
 			        }
 			    }
 			};
