@@ -18,7 +18,7 @@ public class MessageViewer extends JFrame {
 			public void run() {
 				try {
 					MessageViewer frame = new MessageViewer(message);
-					frame.setVisible(true);
+					frame.setVisible(true);	
 							
 				} catch (Exception e) {
 					e.printStackTrace();
