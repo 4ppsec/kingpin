@@ -182,7 +182,7 @@ public class ProKSy {
 	       			//frame.setVisible(false);
 	       			frame.setEnabled(false);
 	       			//System.out.println(tblTraffic.getValueAt(selectedrow, 1).toString());
-	       			MessageViewer mv = new MessageViewer(tblTraffic.getValueAt(selectedrow, 1).toString());
+	       			MessageViewer mv = new MessageViewer(tblTraffic.getValueAt(selectedrow, 1).toString(),frame);
 	       			mv.setVisible(true);
 	       			mv.addWindowListener(new WindowAdapter() {
 					    @Override
@@ -226,7 +226,7 @@ public class ProKSy {
 	       			//frame.setVisible(false);
 	       			frame.setEnabled(false);
 	       			//System.out.println(tblTraffic.getValueAt(selectedrow, 1).toString());
-	       			MessageViewer mv = new MessageViewer(tblLog.getValueAt(selectedrow, 1).toString());
+	       			MessageViewer mv = new MessageViewer(tblLog.getValueAt(selectedrow, 1).toString(),frame);
 	       			mv.setVisible(true);
 	       			mv.addWindowListener(new WindowAdapter() {
 					    @Override
@@ -604,7 +604,7 @@ public class ProKSy {
 		       			//frame.setVisible(false);
 		       			frame.setEnabled(false);
 		       			//System.out.println(tblTraffic.getValueAt(selectedrow, 1).toString());
-		       			MessageViewer mv = new MessageViewer(tblTraffic.getValueAt(selectedrow, 1).toString());
+		       			MessageViewer mv = new MessageViewer(tblTraffic.getValueAt(selectedrow, 1).toString(),frame);
 		       			mv.setVisible(true);
 		       			mv.addWindowListener(new WindowAdapter() {
 						    @Override
