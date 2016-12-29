@@ -9,14 +9,12 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.ComponentAdapter;
 import java.awt.event.ComponentEvent;
-import java.awt.event.ComponentListener;
 import java.awt.event.FocusEvent;
 import java.awt.event.FocusListener;
 import java.awt.event.ItemEvent;
 import java.awt.event.ItemListener;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
-import java.awt.event.MouseListener;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.io.BufferedInputStream;
@@ -27,7 +25,7 @@ import java.io.FileReader;
 import java.io.IOException;
 import java.io.OutputStreamWriter;
 import java.io.PrintWriter;
-
+import java.net.Socket;
 import java.net.URL;
 import java.net.UnknownHostException;
 import javax.net.ssl.SSLSocket;
@@ -160,7 +158,7 @@ public class ProKSy {
 		
 		// default border
 		frame.getContentPane().add(tabMain);
-		tabMain.setBounds(0, 0, 440, 200);
+		tabMain.setBounds(10, 10, 440, 200);
 		
 		// traffic		
 		modeltr.addColumn("");
@@ -174,14 +172,11 @@ public class ProKSy {
 		tblTraffic.getColumnModel().getColumn(2).setPreferredWidth(73);
 		tblTraffic.getColumnModel().getColumn(3).setPreferredWidth(73);
 		tblTraffic.getColumnModel().getColumn(4).setPreferredWidth(120);
-		//tblTraffic.setEnabled(false);
 		tblTraffic.addMouseListener(new MouseAdapter() {
 		    public void mousePressed(MouseEvent me) {
 		    	int selectedrow = tblTraffic.getSelectedRow();
 	       		if (selectedrow>=0 && me.getClickCount() == 2) {
-	       			//frame.setVisible(false);
 	       			frame.setEnabled(false);
-	       			//System.out.println(tblTraffic.getValueAt(selectedrow, 1).toString());
 	       			MessageViewer mv = new MessageViewer(tblTraffic.getValueAt(selectedrow, 1).toString());
 	       			mv.setVisible(true);
 	       			mv.addWindowListener(new WindowAdapter() {
@@ -189,6 +184,7 @@ public class ProKSy {
 					    public void windowClosing(WindowEvent windowEvent) {
 					    	mv.dispose();
 					    	ProKSy.frame.setEnabled(true);
+					    	ProKSy.frame.setVisible(true);
 					    }
 					});
 		        }
@@ -223,9 +219,7 @@ public class ProKSy {
 		    public void mousePressed(MouseEvent me) {
 		    	int selectedrow = tblLog.getSelectedRow();
 	       		if (selectedrow>=0 && me.getClickCount() == 2) {
-	       			//frame.setVisible(false);
 	       			frame.setEnabled(false);
-	       			//System.out.println(tblTraffic.getValueAt(selectedrow, 1).toString());
 	       			MessageViewer mv = new MessageViewer(tblLog.getValueAt(selectedrow, 1).toString());
 	       			mv.setVisible(true);
 	       			mv.addWindowListener(new WindowAdapter() {
@@ -601,9 +595,7 @@ public class ProKSy {
 			     
 		       		int selectedrow = tblTraffic.getSelectedRow();
 		       		if(selectedrow>=0) {
-		       			//frame.setVisible(false);
 		       			frame.setEnabled(false);
-		       			//System.out.println(tblTraffic.getValueAt(selectedrow, 1).toString());
 		       			MessageViewer mv = new MessageViewer(tblTraffic.getValueAt(selectedrow, 1).toString());
 		       			mv.setVisible(true);
 		       			mv.addWindowListener(new WindowAdapter() {
@@ -962,7 +954,7 @@ public class ProKSy {
 		}
 	}
 	
-	// read data from remote host
+	// SSL - read data from remote host
 	public static String readAll(SSLSocket sslsocket) throws IOException {
 		StringBuilder sb = new StringBuilder();
 	    int count;
@@ -972,13 +964,34 @@ public class ProKSy {
 			int ad = reader.available();
 			sb.append((char)count);
 			while(ad>0){
-				
 				count=reader.read();
 				sb.append((char)count);
 				ad = reader.available();
-			
 			}
-		
+		} 
+	    catch(Exception e){
+		   SimpleDateFormat time_formatter = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss");
+		   DefaultTableModel model = (DefaultTableModel) ProKSy.tblLog.getModel();
+		   String current_time_str = time_formatter.format(System.currentTimeMillis());
+		   model.addRow(new Object[]{"✘", e, current_time_str});
+	    }
+		return sb.toString();
+	 }
+	
+	// TCP
+	public static String readAll(Socket socket) throws IOException {
+		StringBuilder sb = new StringBuilder();
+	    int count;
+		try {
+			BufferedInputStream  reader = new BufferedInputStream (socket.getInputStream());
+			count=reader.read();
+			int ad = reader.available();
+			sb.append((char)count);
+			while(ad>0){
+				count=reader.read();
+				sb.append((char)count);
+				ad = reader.available();
+			}
 		} 
 	    catch(Exception e){
 		   SimpleDateFormat time_formatter = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss");
