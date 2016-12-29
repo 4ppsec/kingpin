@@ -28,20 +28,22 @@ import java.io.PrintWriter;
 import java.net.Socket;
 import java.net.URL;
 import java.net.UnknownHostException;
-import javax.net.ssl.SSLSocket;
-import javax.net.ssl.SSLSocketFactory;
-
 import java.security.KeyManagementException;
 import java.security.KeyStoreException;
 import java.security.NoSuchAlgorithmException;
 import java.security.UnrecoverableKeyException;
 import java.security.cert.CertificateException;
-
 import java.text.SimpleDateFormat;
 
+import javax.net.ssl.SSLSocket;
+import javax.net.ssl.SSLSocketFactory;
+import javax.swing.AbstractAction;
+import javax.swing.AbstractButton;
 import javax.swing.BorderFactory;
+import javax.swing.ButtonModel;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
+import javax.swing.JCheckBox;
 import javax.swing.JFileChooser;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
@@ -59,10 +61,11 @@ import javax.swing.ScrollPaneConstants;
 import javax.swing.SwingConstants;
 import javax.swing.UIManager;
 import javax.swing.border.Border;
+import javax.swing.event.ChangeEvent;
+import javax.swing.event.ChangeListener;
 import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
 import javax.swing.table.DefaultTableModel;
-import javax.swing.AbstractAction;
 
 public class ProKSy {
 	
@@ -98,7 +101,7 @@ public class ProKSy {
 	public static String sr = "";
 	public static boolean chkreq = false;
 	public static boolean chkres = false;
-	
+	public static boolean SSL = true;
 	
 	// Build UI
 	public static boolean init() {
@@ -447,7 +450,7 @@ public class ProKSy {
 		
 		// configuration tab info
 		JLabel lblLocalPort = new JLabel("Local Port:");
-		lblLocalPort.setBounds(20, 20, 84, 16);
+		lblLocalPort.setBounds(36, 22, 84, 16);
 		panConf.add(lblLocalPort);
 		
 		final JTextField txtLocalPort = new JTextField();
@@ -484,11 +487,11 @@ public class ProKSy {
 		});
 		
 		JLabel lblRemotePort = new JLabel("Remote Port:");
-		lblRemotePort.setBounds(20, 60, 84, 16);
+		lblRemotePort.setBounds(20, 49, 84, 16);
 		panConf.add(lblRemotePort);
 		
 		final JTextField txtRemotePort = new JTextField();
-		txtRemotePort.setBounds(115, 60, 60, 20);
+		txtRemotePort.setBounds(115, 47, 60, 20);
 		panConf.add(txtRemotePort);
 		txtRemotePort.setColumns(10);
 		txtRemotePort.addFocusListener(new FocusListener() {
@@ -502,11 +505,11 @@ public class ProKSy {
 		});
 		
 		JLabel lblRemoteHost = new JLabel("Remote Host:");
-		lblRemoteHost.setBounds(200, 60, 84, 16);
+		lblRemoteHost.setBounds(198, 49, 84, 16);
 		panConf.add(lblRemoteHost);
 
 		final JTextField txtRemoteHost = new JTextField();
-		txtRemoteHost.setBounds(288, 60, 110, 20);
+		txtRemoteHost.setBounds(288, 47, 110, 20);
 		panConf.add(txtRemoteHost);
 		txtRemoteHost.setColumns(10);
 		txtRemoteHost.addFocusListener(new FocusListener() {
@@ -577,6 +580,25 @@ public class ProKSy {
 		});
 		btnSelectKS.setBounds(20, 104, 100, 20);
 		panConf.add(btnSelectKS);
+		
+		JCheckBox chckbxNewCheckBox = new JCheckBox("SSL");
+		chckbxNewCheckBox.setSelected(true);
+		ChangeListener changeListener = new ChangeListener() {
+		      public void stateChanged(ChangeEvent changeEvent) {
+		    	  if(chckbxNewCheckBox.isSelected()){
+		    		  btnSelectKS.setEnabled(true);
+		    		  txtKSPass.setEnabled(true);
+		    		  
+		    	  }
+		    	  else{
+		    		  btnSelectKS.setEnabled(false);
+		    		  txtKSPass.setEnabled(false);
+		    	  }
+		      }
+		    };
+		    chckbxNewCheckBox.addChangeListener(changeListener);   
+		chckbxNewCheckBox.setBounds(285, 76, 113, 25);
+		panConf.add(chckbxNewCheckBox);
 				
 		// top menu options
 		final JMenuBar menuBar = new JMenuBar();

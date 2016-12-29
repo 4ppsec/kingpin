@@ -4,7 +4,8 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.OutputStreamWriter;
 import java.io.PrintWriter;
-
+import java.net.ServerSocket;
+import java.net.Socket;
 import java.security.KeyManagementException;
 import java.security.KeyStore;
 import java.security.KeyStoreException;
@@ -14,6 +15,7 @@ import java.security.cert.CertificateException;
 import java.security.cert.X509Certificate;
 import java.text.SimpleDateFormat;
 
+import javax.net.ServerSocketFactory;
 import javax.net.ssl.KeyManagerFactory;
 import javax.net.ssl.SSLContext;
 import javax.net.ssl.SSLServerSocket;
@@ -28,6 +30,8 @@ public class Run extends Thread {
 	volatile boolean stop = false;
 	static SSLSocket sslconnectionSocket = null;
 	static SSLServerSocket ServerSocketSSL = null;
+	static Socket connectionSocket = null;
+	static ServerSocket ServerSocket = null;
 	public  Boolean isInit = false;
 	public  Boolean isInterupt = false;
 	public boolean initialize() {
@@ -51,6 +55,7 @@ public class Run extends Thread {
 			
 			SSLContext context;
 			SSLServerSocketFactory factory;
+			ServerSocketFactory noSSLFac;
 			try {
 				context = SSLContext.getInstance("TLS");
 				KeyManagerFactory keyManagerFactory;
@@ -62,7 +67,10 @@ public class Run extends Thread {
 			    factory = context.getServerSocketFactory();
 		
 			    int port = Integer.parseInt(ProKSy.lp);
+			    if(ProKSy.SSL)
 			    ServerSocketSSL = (SSLServerSocket)factory.createServerSocket(port);
+			    else
+			    	ServerSocket = (ServerSocket)ServerSocketFactory.getDefault().createServerSocket(port);
 			  
 			}catch (KeyStoreException e1) {
 				String current_time_str = time_formatter.format(System.currentTimeMillis());
@@ -103,6 +111,34 @@ public class Run extends Thread {
 	 }
 		
 	}
+	//noSSL
+	//ssl
+		public static String readAll(Socket socket) throws IOException {
+		    StringBuilder sb = new StringBuilder();
+		    int count;
+			try {
+				BufferedInputStream  reader = new BufferedInputStream (socket.getInputStream());
+				count=reader.read();
+				int ad = reader.available();
+				sb.append((char)count);
+				while(ad>0){
+					
+					count=reader.read();
+					sb.append((char)count);
+					ad = reader.available();
+				
+				}
+			
+			} 
+		    catch(Exception e){
+			   SimpleDateFormat time_formatter = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss");
+			   DefaultTableModel model = (DefaultTableModel) ProKSy.tblLog.getModel();
+			   String current_time_str = time_formatter.format(System.currentTimeMillis());
+			   model.addRow(new Object[]{"✘", e, current_time_str});
+		    }
+			return sb.toString();
+		 }
+	
 	
 	//ssl
 	public static String readAll(SSLSocket sslsocket) throws IOException {
@@ -137,25 +173,47 @@ public class Run extends Thread {
 		DefaultTableModel model = (DefaultTableModel) ProKSy.tblLog.getModel();
 		try {
 			while (!Thread.interrupted()) {
+				if(ProKSy.SSL)
 		    	sslconnectionSocket = (SSLSocket) ServerSocketSSL.accept();
+				else
+					connectionSocket=(Socket)ServerSocket.accept();
 		    	String clientSentence="";
 		    	try{
+		    		if(ProKSy.SSL)
 			     clientSentence = readAll(sslconnectionSocket);
+		    		else
+		    	 clientSentence = readAll(connectionSocket);
 		    	}
 		    	catch(Exception ea){
 		    		String current_time_str = time_formatter.format(System.currentTimeMillis());
 		    	    model.addRow(new Object[]{"✘", ea, current_time_str});
-		    		sslconnectionSocket.close();
+		    		if(ProKSy.SSL){
+		    	    sslconnectionSocket.close();
 		    		sslconnectionSocket=null;
 		    		ServerSocketSSL.close();
 		    		ServerSocketSSL=null;
+		    		}
+		    		else{
+		    			connectionSocket.close();
+			    		connectionSocket=null;
+			    		ServerSocket.close();
+			    		ServerSocket=null;
+		    		}
 		    		return;
 		    	}
 		    	if(isInterupt){
-		    		sslconnectionSocket.close();
-		    		sslconnectionSocket=null;
-		    		ServerSocketSSL.close();
-		    		ServerSocketSSL=null;
+		    		if(ProKSy.SSL){
+			    	    sslconnectionSocket.close();
+			    		sslconnectionSocket=null;
+			    		ServerSocketSSL.close();
+			    		ServerSocketSSL=null;
+			    		}
+			    		else{
+			    			connectionSocket.close();
+				    		connectionSocket=null;
+				    		ServerSocket.close();
+				    		ServerSocket=null;
+			    		}
 		    		String current_time_str = time_formatter.format(System.currentTimeMillis());
 					model.addRow(new Object[]{"■", "ProKSy stopped", current_time_str});
 		    		return;
@@ -175,13 +233,19 @@ public class Run extends Thread {
 				}
 				
 			    PrintWriter output=null;
+			    if(ProKSy.SSL)
 			    output = new PrintWriter(new OutputStreamWriter(sslconnectionSocket.getOutputStream()));
-			    
+			    else
+			        output = new PrintWriter(new OutputStreamWriter(connectionSocket.getOutputStream()));
+				
 				    try {
 			      	  //send msg to client
 			      	  output.print(FromServer + '\n');
 			      	  output.flush(); 
+			      	  if(ProKSy.SSL)
 			      	  sslconnectionSocket.close();
+			      	  else
+			      		connectionSocket.close();
 			        } 
 			        catch (Exception e) {
 			        	String current_time_str = time_formatter.format(System.currentTimeMillis());
