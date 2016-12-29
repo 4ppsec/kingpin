@@ -54,9 +54,11 @@ public class Run extends Thread {
 			};
 			
 			SSLContext context;
-			SSLServerSocketFactory factory;
+			SSLServerSocketFactory factory=null;
 			ServerSocketFactory noSSLFac;
+		
 			try {
+				if(ProKSy.SSL){
 				context = SSLContext.getInstance("TLS");
 				KeyManagerFactory keyManagerFactory;
 				keyManagerFactory = KeyManagerFactory.getInstance("SunX509");
@@ -65,7 +67,7 @@ public class Run extends Thread {
 			    keyManagerFactory.init(keyStore, ProKSy.pw.toCharArray());
 			    context.init(keyManagerFactory.getKeyManagers(), trustAllCerts, null);
 			    factory = context.getServerSocketFactory();
-		
+				}
 			    int port = Integer.parseInt(ProKSy.lp);
 			    if(ProKSy.SSL)
 			    ServerSocketSSL = (SSLServerSocket)factory.createServerSocket(port);
@@ -255,7 +257,7 @@ public class Run extends Thread {
 			
 		 } catch (Exception e) {
 				String current_time_str = time_formatter.format(System.currentTimeMillis());
-			    model.addRow(new Object[]{"✘", e, current_time_str});
+ 			    model.addRow(new Object[]{"✘", e, current_time_str});
 		 }
 	}
 }

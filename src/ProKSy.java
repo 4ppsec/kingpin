@@ -35,6 +35,7 @@ import java.security.UnrecoverableKeyException;
 import java.security.cert.CertificateException;
 import java.text.SimpleDateFormat;
 
+import javax.net.SocketFactory;
 import javax.net.ssl.SSLSocket;
 import javax.net.ssl.SSLSocketFactory;
 import javax.swing.AbstractAction;
@@ -581,11 +582,11 @@ public class ProKSy {
 		btnSelectKS.setBounds(20, 104, 100, 20);
 		panConf.add(btnSelectKS);
 		
-		JCheckBox chckbxNewCheckBox = new JCheckBox("SSL");
-		chckbxNewCheckBox.setSelected(true);
+		JCheckBox chckbxSSL = new JCheckBox("SSL");
+		chckbxSSL.setSelected(true);
 		ChangeListener changeListener = new ChangeListener() {
 		      public void stateChanged(ChangeEvent changeEvent) {
-		    	  if(chckbxNewCheckBox.isSelected()){
+		    	  if(chckbxSSL.isSelected()){
 		    		  btnSelectKS.setEnabled(true);
 		    		  txtKSPass.setEnabled(true);
 		    		  
@@ -594,11 +595,12 @@ public class ProKSy {
 		    		  btnSelectKS.setEnabled(false);
 		    		  txtKSPass.setEnabled(false);
 		    	  }
+		    	  SSL=chckbxSSL.isSelected();
 		      }
 		    };
-		    chckbxNewCheckBox.addChangeListener(changeListener);   
-		chckbxNewCheckBox.setBounds(285, 76, 113, 25);
-		panConf.add(chckbxNewCheckBox);
+		    chckbxSSL.addChangeListener(changeListener);   
+		chckbxSSL.setBounds(285, 76, 113, 25);
+		panConf.add(chckbxSSL);
 				
 		// top menu options
 		final JMenuBar menuBar = new JMenuBar();
@@ -674,6 +676,7 @@ public class ProKSy {
 		menuStart.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				if (txtLocalPort.getText().length() < 1) {
+					SSL=chckbxSSL.isSelected();
 					txtLocalPort.setBorder(border);
 					canStart = false;
 				}
@@ -701,12 +704,12 @@ public class ProKSy {
 					btnSelectKS.setBorder(border);
 					canStart = false;
 				}
-				else  {ks = txtKSPath.getText(); }
+				else if(chckbxSSL.isSelected()) {ks = txtKSPath.getText(); }
 				
-				if (txtKSPass.getText().length() < 1 ){
+				if (chckbxSSL.isSelected() && txtKSPass.getText().length() < 1 ){
 					txtKSPass.setBorder(borderWarning);
 				}
-				else  {pw = txtKSPass.getText(); }	
+				else if(chckbxSSL.isSelected())  {pw = txtKSPass.getText(); }	
 				
 				SimpleDateFormat time_formatter = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss");
 				DefaultTableModel model = (DefaultTableModel) tblLog.getModel();
@@ -748,9 +751,13 @@ public class ProKSy {
 				DefaultTableModel model = (DefaultTableModel) ProKSy.tblLog.getModel();
 				thread.interrupt();
 				thread.isInterupt=true;
+				Socket socket=null;
+				if(SSL){
 				System.setProperty("javax.net.ssl.trustStore", ks);
 				SSLSocketFactory sslsocketfactory = (SSLSocketFactory) SSLSocketFactory.getDefault();
-				SSLSocket sslsocket;
+				SSLSocket sslsocket=null;
+				
+				
 				try {
 					sslsocket = (SSLSocket) sslsocketfactory.createSocket(lh, Integer.parseInt(lp));
 					sslsocket.getOutputStream().write(-1);
@@ -767,6 +774,24 @@ public class ProKSy {
 					String current_time_str = time_formatter.format(System.currentTimeMillis());
 			    	model.addRow(new Object[]{"✘", e2, current_time_str});
 			    	tabMain.setSelectedIndex(3);
+				}
+				}
+				else{
+					try{
+					socket=SocketFactory.getDefault().createSocket(lh, Integer.parseInt(lp));
+					} catch (NumberFormatException e2) {
+						String current_time_str = time_formatter.format(System.currentTimeMillis());
+				    	model.addRow(new Object[]{"✘", e2, current_time_str});
+				    	tabMain.setSelectedIndex(3);
+					} catch (UnknownHostException e2) {
+						String current_time_str = time_formatter.format(System.currentTimeMillis());
+				    	model.addRow(new Object[]{"✘", e2, current_time_str});
+				    	tabMain.setSelectedIndex(3);
+					} catch (Exception e2) {
+						String current_time_str = time_formatter.format(System.currentTimeMillis());
+				    	model.addRow(new Object[]{"✘", e2, current_time_str});
+				    	tabMain.setSelectedIndex(3);
+					}
 				}
 				menuStop.setEnabled(false);
 				menuStart.setEnabled(true);
@@ -946,25 +971,51 @@ public class ProKSy {
 		try{
 			SimpleDateFormat time_formatter = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss");
 			DefaultTableModel modeltr = (DefaultTableModel) ProKSy.tblTraffic.getModel();
+			
 			SSLSocket sslsocket=null;
+			Socket socket=null;
 			PrintWriter outToServer=null;
 			String answer="";
 			
-			System.setProperty("javax.net.ssl.trustStore", ks);
-			SSLSocketFactory sslsocketfactory = (SSLSocketFactory) SSLSocketFactory.getDefault();
-			sslsocket = (SSLSocket) sslsocketfactory.createSocket(Remote, port);
-			outToServer = new PrintWriter(new OutputStreamWriter(sslsocket.getOutputStream()));
+			
+			if(SSL){
+				System.setProperty("javax.net.ssl.trustStore", ks);
+				SSLSocketFactory sslsocketfactory = (SSLSocketFactory) SSLSocketFactory.getDefault();
+				sslsocket = (SSLSocket) sslsocketfactory.createSocket(Remote, port);
+				outToServer = new PrintWriter(new OutputStreamWriter(sslsocket.getOutputStream()));
+			}
+			else{
+				socket = (Socket)SocketFactory.getDefault().createSocket(Remote, port);
+				outToServer = new PrintWriter(new OutputStreamWriter(socket.getOutputStream()));
 
+			}
+			
       outToServer.print(msgSend + '\n');
       String current_time_str = time_formatter.format(System.currentTimeMillis());
+      if(SSL)
       modeltr.addRow(new Object[]{"↖", msgSend, sslsocket.getLocalSocketAddress().toString().replace("/",""), sslsocket.getRemoteSocketAddress().toString().replace("/",""), current_time_str});
-      outToServer.flush();
+      else    modeltr.addRow(new Object[]{"↖", msgSend, socket.getLocalSocketAddress().toString().replace("/",""), socket.getRemoteSocketAddress().toString().replace("/",""), current_time_str});
       
+      outToServer.flush();
+      if(SSL){
       answer = readAll(sslsocket);
       sslsocket.close();
+      }
+      else{
+    	  answer = readAll(socket);
+    	  socket.close();
+      }
+      
       
       current_time_str = time_formatter.format(System.currentTimeMillis());
+      if(SSL){
       modeltr.addRow(new Object[]{"↘", answer, sslsocket.getRemoteSocketAddress().toString().replace("/",""), sslsocket.getLocalSocketAddress().toString().split("/")[1], current_time_str});
+      }
+      else{
+    	  
+    	  modeltr.addRow(new Object[]{"↘", answer, socket.getRemoteSocketAddress().toString().replace("/",""), socket.getLocalSocketAddress().toString().split("/")[1], current_time_str});
+    	     
+      }
       return answer;
 		}
 		catch (IOException e) {
@@ -975,6 +1026,7 @@ public class ProKSy {
 		    return "";
 		}
 	}
+	
 	
 	// SSL - read data from remote host
 	public static String readAll(SSLSocket sslsocket) throws IOException {
@@ -1031,6 +1083,7 @@ public class ProKSy {
 			throws IOException, NoSuchAlgorithmException, KeyStoreException, CertificateException, UnrecoverableKeyException, KeyManagementException {
 		SimpleDateFormat time_formatter = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss");
 		DefaultTableModel model = (DefaultTableModel) ProKSy.tblLog.getModel();
+		
 		if (thread == null)	{
 			thread = new Run();
 		}
