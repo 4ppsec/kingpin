@@ -55,7 +55,7 @@ public class Run extends Thread {
 			
 			SSLContext context;
 			SSLServerSocketFactory factory=null;
-			ServerSocketFactory noSSLFac;
+			//ServerSocketFactory noSSLFac;
 		
 			try {
 				if(ProKSy.SSL){

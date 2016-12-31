@@ -34,14 +34,11 @@ import java.security.NoSuchAlgorithmException;
 import java.security.UnrecoverableKeyException;
 import java.security.cert.CertificateException;
 import java.text.SimpleDateFormat;
-
 import javax.net.SocketFactory;
 import javax.net.ssl.SSLSocket;
 import javax.net.ssl.SSLSocketFactory;
 import javax.swing.AbstractAction;
-import javax.swing.AbstractButton;
 import javax.swing.BorderFactory;
-import javax.swing.ButtonModel;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JCheckBox;
@@ -548,7 +545,7 @@ public class ProKSy {
 		txtKSPath.setForeground(Color.lightGray);
 		txtKSPath.setBounds(20, 135, 375, 16);
 		panConf.add(txtKSPath);
-				
+		JCheckBox chckbxSSL = new JCheckBox("SSL");		
 		// Browse KeyStore button
 		final JButton btnSelectKS = new JButton("Select KeyStore");
 		btnSelectKS.setMargin(new Insets(0,0,0,0));
@@ -581,8 +578,6 @@ public class ProKSy {
 		});
 		btnSelectKS.setBounds(20, 104, 100, 20);
 		panConf.add(btnSelectKS);
-		
-		JCheckBox chckbxSSL = new JCheckBox("SSL");
 		chckbxSSL.setSelected(true);
 		ChangeListener changeListener = new ChangeListener() {
 		      public void stateChanged(ChangeEvent changeEvent) {
@@ -715,7 +710,7 @@ public class ProKSy {
 				DefaultTableModel model = (DefaultTableModel) tblLog.getModel();
 				if (canStart)
 					try {
-						doStart(menuBar, menuStart, menuStop, menuClear, menuBrowseKS, menuLoad, txtLocalHost, txtLocalPort, txtRemoteHost, txtRemotePort, txtKSPass, btnSelectKS, tabMain);
+						doStart(menuBar, menuStart, menuStop, menuClear, menuBrowseKS, menuLoad, txtLocalHost, txtLocalPort, txtRemoteHost, txtRemotePort, txtKSPass, btnSelectKS, tabMain, chckbxSSL);
 					} catch (UnrecoverableKeyException e1) {
 						String current_time_str = time_formatter.format(System.currentTimeMillis());
 				    	model.addRow(new Object[]{"✘", e1, current_time_str});
@@ -751,34 +746,34 @@ public class ProKSy {
 				DefaultTableModel model = (DefaultTableModel) ProKSy.tblLog.getModel();
 				thread.interrupt();
 				thread.isInterupt=true;
+				@SuppressWarnings("unused")
 				Socket socket=null;
-				if(SSL){
-				System.setProperty("javax.net.ssl.trustStore", ks);
-				SSLSocketFactory sslsocketfactory = (SSLSocketFactory) SSLSocketFactory.getDefault();
-				SSLSocket sslsocket=null;
+				if(SSL) {
+					System.setProperty("javax.net.ssl.trustStore", ks);
+					SSLSocketFactory sslsocketfactory = (SSLSocketFactory) SSLSocketFactory.getDefault();
+					SSLSocket sslsocket=null;
 				
-				
-				try {
-					sslsocket = (SSLSocket) sslsocketfactory.createSocket(lh, Integer.parseInt(lp));
-					sslsocket.getOutputStream().write(-1);
-					sslsocket.close();
-				} catch (NumberFormatException e2) {
-					String current_time_str = time_formatter.format(System.currentTimeMillis());
-			    	model.addRow(new Object[]{"✘", e2, current_time_str});
-			    	tabMain.setSelectedIndex(3);
-				} catch (UnknownHostException e2) {
-					String current_time_str = time_formatter.format(System.currentTimeMillis());
-			    	model.addRow(new Object[]{"✘", e2, current_time_str});
-			    	tabMain.setSelectedIndex(3);
-				} catch (Exception e2) {
-					String current_time_str = time_formatter.format(System.currentTimeMillis());
-			    	model.addRow(new Object[]{"✘", e2, current_time_str});
-			    	tabMain.setSelectedIndex(3);
-				}
+					try {
+						sslsocket = (SSLSocket) sslsocketfactory.createSocket(lh, Integer.parseInt(lp));
+						sslsocket.getOutputStream().write(-1);
+						sslsocket.close();
+					} catch (NumberFormatException e2) {
+						String current_time_str = time_formatter.format(System.currentTimeMillis());
+				    	model.addRow(new Object[]{"✘", e2, current_time_str});
+				    	tabMain.setSelectedIndex(3);
+					} catch (UnknownHostException e2) {
+						String current_time_str = time_formatter.format(System.currentTimeMillis());
+				    	model.addRow(new Object[]{"✘", e2, current_time_str});
+				    	tabMain.setSelectedIndex(3);
+					} catch (Exception e2) {
+						String current_time_str = time_formatter.format(System.currentTimeMillis());
+				    	model.addRow(new Object[]{"✘", e2, current_time_str});
+				    	tabMain.setSelectedIndex(3);
+					}
 				}
 				else{
 					try{
-					socket=SocketFactory.getDefault().createSocket(lh, Integer.parseInt(lp));
+						socket=SocketFactory.getDefault().createSocket(lh, Integer.parseInt(lp));
 					} catch (NumberFormatException e2) {
 						String current_time_str = time_formatter.format(System.currentTimeMillis());
 				    	model.addRow(new Object[]{"✘", e2, current_time_str});
@@ -797,6 +792,7 @@ public class ProKSy {
 				menuStart.setEnabled(true);
 				menuClear.setEnabled(true);
 				menuLoad.setEnabled(true);
+				chckbxSSL.setEnabled(true);
 				menuBrowseKS.setEnabled(true);
 				txtKSPass.setEditable(true);
 				btnSelectKS.setEnabled(true);
@@ -1079,7 +1075,7 @@ public class ProKSy {
 	// start listening
 	public static void doStart( final JMenuBar menuBar, final JMenuItem start, final JMenuItem stop, final JMenuItem menuClear, final JMenuItem menuBrowseKS, final JMenuItem menuLoad, 
 								final JTextField txtLocalHost, final JTextField txtLocalPort, final JTextField txtRemoteHost, final JTextField txtRemotePort,
-								final JTextField txtKSPass,	final JButton btnSelectKS, final JTabbedPane tabMain) 
+								final JTextField txtKSPass,	final JButton btnSelectKS, final JTabbedPane tabMain, final JCheckBox chckbxSSL) 
 			throws IOException, NoSuchAlgorithmException, KeyStoreException, CertificateException, UnrecoverableKeyException, KeyManagementException {
 		SimpleDateFormat time_formatter = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss");
 		DefaultTableModel model = (DefaultTableModel) ProKSy.tblLog.getModel();
@@ -1095,6 +1091,7 @@ public class ProKSy {
 				txtLocalPort.setEnabled(false);
 				txtLocalHost.setEnabled(false);
 				txtRemotePort.setEnabled(false);
+				chckbxSSL.setEnabled(false);
 				txtRemoteHost.setEnabled(false);
 				txtKSPass.setEditable(false);
 				btnSelectKS.setEnabled(false);
