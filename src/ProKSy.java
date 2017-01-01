@@ -68,7 +68,8 @@ import javax.swing.table.DefaultTableModel;
 public class ProKSy {
 	
 	private static final String BIG_LOGO = "appsec_logo.png";
-	private static final String SMALL_LOGO = "appsec_logo_transparent.png";
+	private static final String PROKSY_LOGO = "proksy_logo.png";
+	private static final String SMALL_LOGO = "proksy_ico.png";
 	private static final String START_ICON = "proksy_start_16.png";
 	private static final String STOP_ICON = "proksy_stop_16.png";
 	private static final String SAVE_ICON = "proksy_save_16.png";
@@ -106,7 +107,8 @@ public class ProKSy {
 		// icon for ABOUT
 		URL img = ProKSy.class.getResource(BIG_LOGO);
         final ImageIcon icon = new ImageIcon(img);
-        
+        URL logo = ProKSy.class.getResource(PROKSY_LOGO);
+        final ImageIcon logoicon = new ImageIcon(logo);
 		DefaultTableModel model = new DefaultTableModel();
 		DefaultTableModel modeltr = new DefaultTableModel();
 		tblTraffic = new JTable(modeltr);
@@ -146,7 +148,7 @@ public class ProKSy {
 		frame.setIconImage(Toolkit.getDefaultToolkit().getImage(ProKSy.class.getResource(SMALL_LOGO)));
 		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		frame.getContentPane();
-		Dimension d = new Dimension(475,260);
+		Dimension d = new Dimension(475,275);
 		frame.setPreferredSize(d);
 		frame.setVisible(true);
 		frame.setMinimumSize(d);
@@ -520,12 +522,12 @@ public class ProKSy {
 			}
 		});
 		
-		JLabel lblKSPass = new JLabel("KeyStore Password:");
-		lblKSPass.setBounds(164, 106, 120, 16);
+		JLabel lblKSPass = new JLabel("KS Password:");
+		lblKSPass.setBounds(195, 86, 120, 16);
 		panConf.add(lblKSPass);
 
 		final JTextField txtKSPass = new JPasswordField();
-		txtKSPass.setBounds(288, 104, 110, 20);
+		txtKSPass.setBounds(288, 84, 110, 20);
 		panConf.add(txtKSPass);
 		txtKSPass.setColumns(10);
 		txtKSPass.addFocusListener(new FocusListener() {
@@ -543,7 +545,7 @@ public class ProKSy {
 		txtKSPath.setBorder(borderEmpty);
 		txtKSPath.setEditable(false);
 		txtKSPath.setForeground(Color.lightGray);
-		txtKSPath.setBounds(20, 135, 375, 16);
+		txtKSPath.setBounds(15, 110, 375, 16);
 		panConf.add(txtKSPath);
 		JCheckBox chckbxSSL = new JCheckBox("SSL");		
 		// Browse KeyStore button
@@ -576,7 +578,7 @@ public class ProKSy {
 					btnSelectKS.setBorder(border);
 		    }
 		});
-		btnSelectKS.setBounds(20, 104, 100, 20);
+		btnSelectKS.setBounds(75, 84, 100, 20);
 		panConf.add(btnSelectKS);
 		chckbxSSL.setSelected(true);
 		ChangeListener changeListener = new ChangeListener() {
@@ -593,9 +595,14 @@ public class ProKSy {
 		    	  SSL=chckbxSSL.isSelected();
 		      }
 		    };
-		    chckbxSSL.addChangeListener(changeListener);   
-		chckbxSSL.setBounds(285, 76, 113, 25);
+		chckbxSSL.addChangeListener(changeListener);   
+		//chckbxSSL.setBounds(285, 76, 113, 25);
+		chckbxSSL.setBounds(10, 84, 50, 20);
 		panConf.add(chckbxSSL);
+		JLabel proksy_logo = new JLabel("", logoicon, JLabel.CENTER);
+		proksy_logo.setBounds(120, 115, 210, 85);
+		panConf.add(proksy_logo);
+		
 				
 		// top menu options
 		final JMenuBar menuBar = new JMenuBar();
