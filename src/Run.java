@@ -55,7 +55,6 @@ public class Run extends Thread {
 			
 			SSLContext context;
 			SSLServerSocketFactory factory=null;
-			//ServerSocketFactory noSSLFac;
 		
 			try {
 				if(ProKSy.SSL){
@@ -113,33 +112,30 @@ public class Run extends Thread {
 	 }
 		
 	}
-	//noSSL
-	//ssl
-		public static String readAll(Socket socket) throws IOException {
-		    StringBuilder sb = new StringBuilder();
-		    int count;
-			try {
-				BufferedInputStream  reader = new BufferedInputStream (socket.getInputStream());
+	
+	//tcp
+	public static String readAll(Socket socket) throws IOException {
+	    StringBuilder sb = new StringBuilder();
+	    int count;
+		try {
+			BufferedInputStream  reader = new BufferedInputStream (socket.getInputStream());
+			count=reader.read();
+			int ad = reader.available();
+			sb.append((char)count);
+			while(ad>0) {
 				count=reader.read();
-				int ad = reader.available();
 				sb.append((char)count);
-				while(ad>0){
-					
-					count=reader.read();
-					sb.append((char)count);
-					ad = reader.available();
-				
-				}
-			
-			} 
-		    catch(Exception e){
-			   SimpleDateFormat time_formatter = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss");
-			   DefaultTableModel model = (DefaultTableModel) ProKSy.tblLog.getModel();
-			   String current_time_str = time_formatter.format(System.currentTimeMillis());
-			   model.addRow(new Object[]{"✘", e, current_time_str});
-		    }
-			return sb.toString();
-		 }
+				ad = reader.available();
+			}
+		} 
+	    catch(Exception e){
+		   SimpleDateFormat time_formatter = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss");
+		   DefaultTableModel model = (DefaultTableModel) ProKSy.tblLog.getModel();
+		   String current_time_str = time_formatter.format(System.currentTimeMillis());
+		   model.addRow(new Object[]{"✘", e, current_time_str});
+	    }
+		return sb.toString();
+	}
 	
 	
 	//ssl
@@ -151,14 +147,11 @@ public class Run extends Thread {
 			count=reader.read();
 			int ad = reader.available();
 			sb.append((char)count);
-			while(ad>0){
-				
+			while(ad>0) {	
 				count=reader.read();
 				sb.append((char)count);
 				ad = reader.available();
-			
 			}
-		
 		} 
 	    catch(Exception e){
 		   SimpleDateFormat time_formatter = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss");
@@ -176,24 +169,24 @@ public class Run extends Thread {
 		try {
 			while (!Thread.interrupted()) {
 				if(ProKSy.SSL)
-		    	sslconnectionSocket = (SSLSocket) ServerSocketSSL.accept();
+					sslconnectionSocket = (SSLSocket) ServerSocketSSL.accept();
 				else
 					connectionSocket=(Socket)ServerSocket.accept();
 		    	String clientSentence="";
-		    	try{
+		    	try {
 		    		if(ProKSy.SSL)
-			     clientSentence = readAll(sslconnectionSocket);
+		    			clientSentence = readAll(sslconnectionSocket);
 		    		else
-		    	 clientSentence = readAll(connectionSocket);
+		    			clientSentence = readAll(connectionSocket);
 		    	}
-		    	catch(Exception ea){
+		    	catch(Exception ea) {
 		    		String current_time_str = time_formatter.format(System.currentTimeMillis());
 		    	    model.addRow(new Object[]{"✘", ea, current_time_str});
 		    		if(ProKSy.SSL){
-		    	    sslconnectionSocket.close();
-		    		sslconnectionSocket=null;
-		    		ServerSocketSSL.close();
-		    		ServerSocketSSL=null;
+			    	    sslconnectionSocket.close();
+			    		sslconnectionSocket=null;
+			    		ServerSocketSSL.close();
+			    		ServerSocketSSL=null;
 		    		}
 		    		else{
 		    			connectionSocket.close();
@@ -204,13 +197,13 @@ public class Run extends Thread {
 		    		return;
 		    	}
 		    	if(isInterupt){
-		    		if(ProKSy.SSL){
+		    		if(ProKSy.SSL) {
 			    	    sslconnectionSocket.close();
 			    		sslconnectionSocket=null;
 			    		ServerSocketSSL.close();
 			    		ServerSocketSSL=null;
 			    		}
-			    		else{
+			    		else {
 			    			connectionSocket.close();
 				    		connectionSocket=null;
 				    		ServerSocket.close();
@@ -245,9 +238,9 @@ public class Run extends Thread {
 			      	  output.print(FromServer + '\n');
 			      	  output.flush(); 
 			      	  if(ProKSy.SSL)
-			      	  sslconnectionSocket.close();
+			      		  sslconnectionSocket.close();
 			      	  else
-			      		connectionSocket.close();
+			      		  connectionSocket.close();
 			        } 
 			        catch (Exception e) {
 			        	String current_time_str = time_formatter.format(System.currentTimeMillis());
