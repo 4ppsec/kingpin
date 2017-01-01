@@ -1,4 +1,4 @@
-![alt tag](https://appsec-labs.com/wp-content/uploads/2016/10/proksy_logo.png)
+![alt tag](https://appsec-labs.com/wp-content/uploads/2016/10/proksy_logo_big.png)
 
 A TCP Proxy with Java KeyStore Handling to Support SSL/TLS connections.
 
