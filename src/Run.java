@@ -32,8 +32,18 @@ public class Run extends Thread {
 	static SSLServerSocket ServerSocketSSL = null;
 	static Socket connectionSocket = null;
 	static ServerSocket ServerSocket = null;
+	public static Object toSleep;
 	public  Boolean isInit = false;
 	public  Boolean isInterupt = false;
+	public volatile boolean running = true;
+	public static String newMessage="";
+	public static Object obj =null;
+	 public synchronized void res() {
+		 running = true;
+		 synchronized (obj){
+		 obj.notify();
+		 }
+	   }
 	public boolean initialize() {
 		SimpleDateFormat time_formatter = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss");
 		DefaultTableModel model = (DefaultTableModel) ProKSy.tblLog.getModel();
@@ -218,15 +228,53 @@ public class Run extends Thread {
 			    	String current_time_str = time_formatter.format(System.currentTimeMillis());
 			    	model.addRow(new Object[]{"✔", "Request replacement:  [" + ProKSy.cf + "] → [" + ProKSy.cr + "]", current_time_str});
 			    }
-			    
-				String FromServer = ProKSy.SendMsgServerString(clientSentence, ProKSy.rh,Integer.parseInt(ProKSy.rp));
+			    String FromServer;
+			    if(ProKSy.interceptRequest)
+			    {
+			    	MessageViewer viewer = new MessageViewer(clientSentence, true,this);
+			    	viewer.setVisible(true);
+			    	running=false;
+			    	obj=new Object();
+			    	try{
+			    	synchronized (obj) {
+			    		while(!running)
+			    			obj.wait();
+			    	} 
+			    	
+			    	}
+			    	catch(InterruptedException e){
+			    		System.out.println(e.getMessage());
+			    	}
+			    	 FromServer = ProKSy.SendMsgServerString(newMessage, ProKSy.rh,Integer.parseInt(ProKSy.rp));
+			    }
+			    else { 
+			    	FromServer = ProKSy.SendMsgServerString(clientSentence, ProKSy.rh,Integer.parseInt(ProKSy.rp));
+			    	};
 				
 				if (ProKSy.sr != null && ProKSy.sf.compareTo("") != 0 && ProKSy.sf != null && ProKSy.chkres && FromServer.toString().contains(ProKSy.sf)) {
 					FromServer = FromServer.replace(ProKSy.sf,ProKSy.sr);
 					String current_time_str = time_formatter.format(System.currentTimeMillis());
 					model.addRow(new Object[]{"✔", "Response replacement:  [" + ProKSy.sf + "] → [" + ProKSy.sr + "]", current_time_str});
 				}
-				
+				if(ProKSy.interceptResponse)
+			    {
+			    	MessageViewer viewer = new MessageViewer(FromServer, true,this);
+			    	viewer.setVisible(true);
+			    	running=false;
+			    	obj=new Object();
+			    	try{
+			    	synchronized (obj) {
+			    		while(!running)
+			    			obj.wait();
+			    	} 
+			    	
+			    	}
+			    	catch(InterruptedException e){
+			    		System.out.println(e.getMessage());
+			    	}
+			    	FromServer = newMessage;
+			    }
+			   
 			    PrintWriter output=null;
 			    if(ProKSy.SSL)
 			    output = new PrintWriter(new OutputStreamWriter(sslconnectionSocket.getOutputStream()));

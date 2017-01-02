@@ -34,6 +34,7 @@ import java.security.NoSuchAlgorithmException;
 import java.security.UnrecoverableKeyException;
 import java.security.cert.CertificateException;
 import java.text.SimpleDateFormat;
+
 import javax.net.SocketFactory;
 import javax.net.ssl.SSLSocket;
 import javax.net.ssl.SSLSocketFactory;
@@ -86,7 +87,8 @@ public class ProKSy {
 	
 	static JTable tblLog;
 	static JTable tblTraffic;
-	
+	public static boolean interceptRequest = false;
+	public static boolean interceptResponse = false;
 	// list of ProKSy parameters
 	public static String lp = "";
 	public static String lh = "";
@@ -104,6 +106,12 @@ public class ProKSy {
 	
 	// Build UI
 	public static boolean init() {
+		// missing data border
+		final Border border = BorderFactory.createLineBorder(Color.RED);
+		Checkbox justForTheFont = new Checkbox("AppSec Labs");
+		Font font = justForTheFont.getFont();
+				// missing KeyStore password border (not mandatory)
+		final Border borderWarning = BorderFactory.createLineBorder(Color.ORANGE);
 		// icon for ABOUT
 		URL img = ProKSy.class.getResource(BIG_LOGO);
         final ImageIcon icon = new ImageIcon(img);
@@ -121,27 +129,275 @@ public class ProKSy {
         ProKSy.mycolor = frame.getBackground();
         final Border borderDefault =  UIManager.getBorder("TextField.border");
 		
-		final JTextField txtReqFind = new JTextField();
-		final JTextField txtReqRep = new JTextField();
-		final JTextField txtResFind = new JTextField();
-		final JTextField txtResRep= new JTextField();
-		
 		final JTabbedPane tabMain = new JTabbedPane(JTabbedPane.TOP);
 
 		// configuration tab
 		JPanel panConf = new JPanel();
 		panConf.setLayout(null);
 		
-		// match & replace tab
-		JPanel panMR = new JPanel();
-		panMR.setLayout(null);
-		
 		// log tab
 		JPanel panLog = new JPanel();
 		panLog.setLayout(null);
 		
 		tabMain.addTab("Configuration", null, panConf, null);
+		
+		final JTextField txtReqFind = new JTextField();
+		final JTextField txtReqRep = new JTextField();
+		final JTextField txtResFind = new JTextField();
+		final JTextField txtResRep= new JTextField();
+		
+		// match & replace tab
+		JPanel panMR = new JPanel();
+		panMR.setLayout(null);
 		tabMain.addTab("Match & Replace", null, panMR, null);
+		
+		// Match & Replace tab info
+		txtReqFind.setEditable(false);
+		panMR.add(txtReqFind);
+		
+		JLabel mrHelp = new JLabel("<html>You can match & replace traffic while ProKSy is up, at any time.<br>"
+				+ "Simply modify the text feilds below with the data you want to find/replace.</html>");
+		mrHelp.setFont(font);
+		mrHelp.setBounds(12,5,425,50);
+		panMR.add(mrHelp);
+		
+		txtReqFind.setBounds(137, 73, 130, 20);
+		txtReqFind.setColumns(10);
+		txtReqFind.addFocusListener(new FocusListener() {
+			public void focusGained(FocusEvent arg0) {
+				txtReqFind.setBorder(borderDefault);
+			}
+			public void focusLost(FocusEvent arg0) {
+				if (txtReqFind.getText().length() < 1)
+					txtReqFind.setBorder(border);
+			}
+		});
+		
+		txtReqFind.getDocument().addDocumentListener(new DocumentListener() {
+			  public void insertUpdate(DocumentEvent e) {
+				  if (txtReqFind.getText() != null && txtReqFind.getText().compareTo("") !=0)
+					  cf = txtReqFind.getText();
+				  else
+					  cf = "";
+			  }
+			  @Override
+			  public void changedUpdate(DocumentEvent arg0) {
+				  if (txtReqFind.getText() != null && txtReqFind.getText().compareTo("") !=0)
+					  cf = txtReqFind.getText();
+				  else
+					  cf = "";
+			  }
+			  @Override
+			  public void removeUpdate(DocumentEvent arg0) {
+				  if (txtReqFind.getText() != null && txtReqFind.getText().compareTo("") !=0)
+					  cf = txtReqFind.getText();
+				  else
+					  cf = "";
+			  }
+		});
+		
+			JLabel lblReqRep = new JLabel("with:");
+			lblReqRep.setFont(font);
+			lblReqRep.setBounds(275, 74, 75, 16);
+			panMR.add(lblReqRep);
+			
+			txtReqRep.setBounds(310, 73, 130, 20);
+			txtReqRep.setColumns(10);
+			txtReqRep.addFocusListener(new FocusListener() {
+				public void focusGained(FocusEvent arg0) {
+					txtReqRep.setBorder(borderDefault);
+				}
+				public void focusLost(FocusEvent arg0) {
+					if (txtReqRep.getText().length() < 1)
+						txtReqRep.setBorder(borderWarning);
+				}
+			});
+			
+			txtReqRep.getDocument().addDocumentListener(new DocumentListener() {
+				  public void insertUpdate(DocumentEvent e) {
+					  if (txtReqFind.getText() != null && txtReqFind.getText().compareTo("") !=0)
+						  cr = txtReqRep.getText();
+					  else
+						  cr = "";
+				  }
+				  @Override
+				  public void changedUpdate(DocumentEvent arg0) {
+					  if (txtReqFind.getText() != null && txtReqFind.getText().compareTo("") !=0)
+						  cr = txtReqRep.getText();
+					  else
+						  cr = "";
+				  }
+				  @Override
+				  public void removeUpdate(DocumentEvent arg0) {
+					  if (txtReqFind.getText() != null && txtReqFind.getText().compareTo("") !=0)
+						  cr = txtReqRep.getText();
+					  else
+						  cr = "";
+				  }
+			});
+			txtReqRep.setEditable(false);
+			panMR.add(txtReqRep);
+			
+			
+			
+			final Checkbox chkReq = new Checkbox("Request replace:");
+			chkReq.setBounds(10, 75, 110, 16);
+			chkReq.addItemListener(new ItemListener() {
+	         public void itemStateChanged(ItemEvent e) {
+	        	 if (e.getStateChange() == ItemEvent.SELECTED) {
+	        		 txtReqFind.setEditable(true);
+	        		 txtReqRep.setEditable(true);
+	        		 chkreq = true;
+	        	 }
+	        	 else {
+	        		 txtReqFind.setBorder(borderDefault);
+	        		 txtReqFind.setEditable(false);
+	        		 txtReqRep.setBorder(borderDefault);
+	        		 txtReqRep.setEditable(false);
+	        		 chkreq = false;
+	        	 }
+	         }
+	     });
+			panMR.add(chkReq);
+			
+			txtResFind.setBounds(139, 110, 130, 20);
+			txtResFind.setColumns(10);
+			txtResFind.addFocusListener(new FocusListener() {
+				public void focusGained(FocusEvent e) {
+					txtResFind.setBorder(borderDefault);
+				}
+				public void focusLost(FocusEvent e) {
+					if (txtResFind.getText().length() < 1)
+						txtResFind.setBorder(border);
+				}
+			});
+			
+			txtResFind.getDocument().addDocumentListener(new DocumentListener() {
+				public void insertUpdate(DocumentEvent e) {
+				  if (txtResFind.getText() != null && txtResFind.getText().compareTo("") !=0)
+					  sf = txtResFind.getText();
+				  else
+					  sf = "";
+				}
+				@Override
+				public void changedUpdate(DocumentEvent arg0) {
+					  if (txtResFind.getText() != null && txtResFind.getText().compareTo("") !=0)
+						  sf = txtResFind.getText();
+					  else
+						  sf = "";
+				  }
+				@Override
+				public void removeUpdate(DocumentEvent arg0) {
+					  if (txtResFind.getText() != null && txtResFind.getText().compareTo("") !=0)
+						  sf = txtResFind.getText();
+					  else
+						  sf = "";
+				  }
+			});
+			
+			txtResFind.setEditable(false);
+			panMR.add(txtResFind);
+			
+			JLabel lblResRep = new JLabel("with:");
+			lblResRep.setFont(font);
+			lblResRep.setBounds(277, 110, 75, 16);
+			panMR.add(lblResRep);
+			
+			txtResRep.setBounds(312, 110, 130, 20);
+			txtResRep.setColumns(10);
+			txtResRep.addFocusListener(new FocusListener() {
+				public void focusGained(FocusEvent e) {
+					txtResRep.setBorder(borderDefault);
+				}
+				public void focusLost(FocusEvent e) {
+					if (txtResRep.getText().length() < 1)
+						txtResRep.setBorder(borderWarning);
+				}
+			});
+			
+			txtResRep.getDocument().addDocumentListener(new DocumentListener() {
+				public void insertUpdate(DocumentEvent e) {
+					if (txtResFind.getText() != null && txtResFind.getText().compareTo("") !=0)
+						sr = txtResRep.getText();
+					else
+						sr = "";
+				}
+				@Override
+				public void changedUpdate(DocumentEvent arg0){
+					  if (txtResFind.getText() != null && txtResFind.getText().compareTo("") !=0)
+						  sr = txtResRep.getText();
+					  else
+						  sr = "";
+				  }
+				@Override
+				public void removeUpdate(DocumentEvent arg0) {
+					  if (txtResFind.getText() != null && txtResFind.getText().compareTo("") !=0)
+						  sr = txtResRep.getText();
+					  else
+						  sr = "";
+				  }
+			});
+			
+			txtResRep.setEditable(false);
+			panMR.add(txtResRep);
+			
+			final Checkbox chkRes = new Checkbox("Response replace:");
+			chkRes.setBounds(12, 112, 120, 16);
+			chkRes.addItemListener(new ItemListener() {
+	         public void itemStateChanged(ItemEvent e) {
+	        	 if (e.getStateChange() == ItemEvent.SELECTED) {
+	        		 txtResFind.setEditable(true);
+	        		 txtResRep.setEditable(true);
+	        		 chkres = true;
+	        	 }
+	        	 else {
+	        		 txtResFind.setBorder(borderDefault);
+	        		 txtResFind.setEditable(false);
+	        		 txtResRep.setBorder(borderDefault);
+	        		 txtResRep.setEditable(false);
+	        		 chkres = false;
+	        	 }
+	         }
+	     });
+			panMR.add(chkRes);
+			
+			JCheckBox chckbxInterceptRequest = new JCheckBox("Intercept Request");
+			chckbxInterceptRequest.setBounds(99, 139, 143, 25);
+			chckbxInterceptRequest.addActionListener(new ActionListener(){
+
+				@Override
+				public void actionPerformed(ActionEvent e) {
+						if(chckbxInterceptRequest.isSelected()){	
+							interceptRequest = true;							
+						}
+						else{
+							interceptRequest = false;
+						}	
+				}
+			});
+			
+			
+			panMR.add(chckbxInterceptRequest);
+			
+			JCheckBox chckbxInterceptResponse = new JCheckBox("Intercept Response");
+			chckbxInterceptResponse.setBounds(241, 139, 143, 25);
+			chckbxInterceptResponse.addActionListener(new ActionListener(){
+
+				@Override
+				public void actionPerformed(ActionEvent e) {
+					if(chckbxInterceptResponse.isSelected()){	
+						interceptResponse = true;							
+					}
+					else{
+						interceptResponse = false;
+					}	
+					
+				}
+				
+				
+				
+			});
+			panMR.add(chckbxInterceptResponse);
 		tabMain.addTab("Traffic", null, scrollPaneTraffic, null);
 		tabMain.addTab("Log", null, scrollPaneLog, null);
 		
@@ -149,15 +405,11 @@ public class ProKSy {
 		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		frame.getContentPane();
 		Dimension d = new Dimension(475,275);
-		frame.setPreferredSize(d);
+		frame.setPreferredSize(new Dimension(475, 300));
 		frame.setVisible(true);
 		frame.setMinimumSize(d);
 				
-		// missing data border
-		final Border border = BorderFactory.createLineBorder(Color.RED);
 		
-		// missing KeyStore password border (not mandatory)
-		final Border borderWarning = BorderFactory.createLineBorder(Color.ORANGE);
 		
 		// default border
 		frame.getContentPane().add(tabMain);
@@ -180,7 +432,7 @@ public class ProKSy {
 		    	int selectedrow = tblTraffic.getSelectedRow();
 	       		if (selectedrow>=0 && me.getClickCount() == 2) {
 	       			frame.setEnabled(false);
-	       			MessageViewer mv = new MessageViewer(tblTraffic.getValueAt(selectedrow, 1).toString());
+	       			MessageViewer mv = new MessageViewer(tblTraffic.getValueAt(selectedrow, 1).toString(),false,null);
 	       			mv.setVisible(true);
 	       			mv.addWindowListener(new WindowAdapter() {
 					    @Override
@@ -223,7 +475,7 @@ public class ProKSy {
 		    	int selectedrow = tblLog.getSelectedRow();
 	       		if (selectedrow>=0 && me.getClickCount() == 2) {
 	       			frame.setEnabled(false);
-	       			MessageViewer mv = new MessageViewer(tblLog.getValueAt(selectedrow, 1).toString());
+	       			MessageViewer mv = new MessageViewer(tblLog.getValueAt(selectedrow, 1).toString(),false,null);
 	       			mv.setVisible(true);
 	       			mv.addWindowListener(new WindowAdapter() {
 					    @Override
@@ -235,218 +487,7 @@ public class ProKSy {
 		        }
 		    }
 		});
-        
-		// Match & Replace tab info
-		txtReqFind.setEditable(false);
-		panMR.add(txtReqFind);
-		Checkbox justForTheFont = new Checkbox("AppSec Labs");
-		Font font = justForTheFont.getFont();
-		
-		JLabel mrHelp = new JLabel("<html>You can match & replace traffic while ProKSy is up, at any time.<br>"
-				+ "Simply modify the text feilds below with the data you want to find/replace.</html>");
-		mrHelp.setFont(font);
-		mrHelp.setBounds(12,5,425,50);
-		panMR.add(mrHelp);
-		
-		txtReqFind.setBounds(137, 73, 130, 20);
-		txtReqFind.setColumns(10);
-		txtReqFind.addFocusListener(new FocusListener() {
-			public void focusGained(FocusEvent arg0) {
-				txtReqFind.setBorder(borderDefault);
-			}
-			public void focusLost(FocusEvent arg0) {
-				if (txtReqFind.getText().length() < 1)
-					txtReqFind.setBorder(border);
-			}
-		});
-		
-		txtReqFind.getDocument().addDocumentListener(new DocumentListener() {
-			  public void insertUpdate(DocumentEvent e) {
-				  if (txtReqFind.getText() != null && txtReqFind.getText().compareTo("") !=0)
-					  cf = txtReqFind.getText();
-				  else
-					  cf = "";
-			  }
-			  @Override
-			  public void changedUpdate(DocumentEvent arg0) {
-				  if (txtReqFind.getText() != null && txtReqFind.getText().compareTo("") !=0)
-					  cf = txtReqFind.getText();
-				  else
-					  cf = "";
-			  }
-			  @Override
-			  public void removeUpdate(DocumentEvent arg0) {
-				  if (txtReqFind.getText() != null && txtReqFind.getText().compareTo("") !=0)
-					  cf = txtReqFind.getText();
-				  else
-					  cf = "";
-			  }
-		});
 	
-		JLabel lblReqRep = new JLabel("with:");
-		lblReqRep.setFont(font);
-		lblReqRep.setBounds(275, 74, 75, 16);
-		panMR.add(lblReqRep);
-		
-		txtReqRep.setBounds(310, 73, 130, 20);
-		txtReqRep.setColumns(10);
-		txtReqRep.addFocusListener(new FocusListener() {
-			public void focusGained(FocusEvent arg0) {
-				txtReqRep.setBorder(borderDefault);
-			}
-			public void focusLost(FocusEvent arg0) {
-				if (txtReqRep.getText().length() < 1)
-					txtReqRep.setBorder(borderWarning);
-			}
-		});
-		
-		txtReqRep.getDocument().addDocumentListener(new DocumentListener() {
-			  public void insertUpdate(DocumentEvent e) {
-				  if (txtReqFind.getText() != null && txtReqFind.getText().compareTo("") !=0)
-					  cr = txtReqRep.getText();
-				  else
-					  cr = "";
-			  }
-			  @Override
-			  public void changedUpdate(DocumentEvent arg0) {
-				  if (txtReqFind.getText() != null && txtReqFind.getText().compareTo("") !=0)
-					  cr = txtReqRep.getText();
-				  else
-					  cr = "";
-			  }
-			  @Override
-			  public void removeUpdate(DocumentEvent arg0) {
-				  if (txtReqFind.getText() != null && txtReqFind.getText().compareTo("") !=0)
-					  cr = txtReqRep.getText();
-				  else
-					  cr = "";
-			  }
-		});
-		txtReqRep.setEditable(false);
-		panMR.add(txtReqRep);
-		
-		
-		
-		final Checkbox chkReq = new Checkbox("Request replace:");
-		chkReq.setBounds(10, 75, 110, 16);
-		chkReq.addItemListener(new ItemListener() {
-	         public void itemStateChanged(ItemEvent e) {
-	        	 if (e.getStateChange() == ItemEvent.SELECTED) {
-	        		 txtReqFind.setEditable(true);
-	        		 txtReqRep.setEditable(true);
-	        		 chkreq = true;
-	        	 }
-	        	 else {
-	        		 txtReqFind.setBorder(borderDefault);
-	        		 txtReqFind.setEditable(false);
-	        		 txtReqRep.setBorder(borderDefault);
-	        		 txtReqRep.setEditable(false);
-	        		 chkreq = false;
-	        	 }
-	         }
-	     });
-		panMR.add(chkReq);
-		
-		txtResFind.setBounds(137, 118, 130, 20);
-		txtResFind.setColumns(10);
-		txtResFind.addFocusListener(new FocusListener() {
-			public void focusGained(FocusEvent e) {
-				txtResFind.setBorder(borderDefault);
-			}
-			public void focusLost(FocusEvent e) {
-				if (txtResFind.getText().length() < 1)
-					txtResFind.setBorder(border);
-			}
-		});
-		
-		txtResFind.getDocument().addDocumentListener(new DocumentListener() {
-			public void insertUpdate(DocumentEvent e) {
-			  if (txtResFind.getText() != null && txtResFind.getText().compareTo("") !=0)
-				  sf = txtResFind.getText();
-			  else
-				  sf = "";
-			}
-			@Override
-			public void changedUpdate(DocumentEvent arg0) {
-				  if (txtResFind.getText() != null && txtResFind.getText().compareTo("") !=0)
-					  sf = txtResFind.getText();
-				  else
-					  sf = "";
-			  }
-			@Override
-			public void removeUpdate(DocumentEvent arg0) {
-				  if (txtResFind.getText() != null && txtResFind.getText().compareTo("") !=0)
-					  sf = txtResFind.getText();
-				  else
-					  sf = "";
-			  }
-		});
-		
-		txtResFind.setEditable(false);
-		panMR.add(txtResFind);
-		
-		JLabel lblResRep = new JLabel("with:");
-		lblResRep.setFont(font);
-		lblResRep.setBounds(275, 118, 75, 16);
-		panMR.add(lblResRep);
-		
-		txtResRep.setBounds(310, 118, 130, 20);
-		txtResRep.setColumns(10);
-		txtResRep.addFocusListener(new FocusListener() {
-			public void focusGained(FocusEvent e) {
-				txtResRep.setBorder(borderDefault);
-			}
-			public void focusLost(FocusEvent e) {
-				if (txtResRep.getText().length() < 1)
-					txtResRep.setBorder(borderWarning);
-			}
-		});
-		
-		txtResRep.getDocument().addDocumentListener(new DocumentListener() {
-			public void insertUpdate(DocumentEvent e) {
-				if (txtResFind.getText() != null && txtResFind.getText().compareTo("") !=0)
-					sr = txtResRep.getText();
-				else
-					sr = "";
-			}
-			@Override
-			public void changedUpdate(DocumentEvent arg0){
-				  if (txtResFind.getText() != null && txtResFind.getText().compareTo("") !=0)
-					  sr = txtResRep.getText();
-				  else
-					  sr = "";
-			  }
-			@Override
-			public void removeUpdate(DocumentEvent arg0) {
-				  if (txtResFind.getText() != null && txtResFind.getText().compareTo("") !=0)
-					  sr = txtResRep.getText();
-				  else
-					  sr = "";
-			  }
-		});
-		
-		txtResRep.setEditable(false);
-		panMR.add(txtResRep);
-		
-		final Checkbox chkRes = new Checkbox("Response replace:");
-		chkRes.setBounds(10, 120, 120, 16);
-		chkRes.addItemListener(new ItemListener() {
-	         public void itemStateChanged(ItemEvent e) {
-	        	 if (e.getStateChange() == ItemEvent.SELECTED) {
-	        		 txtResFind.setEditable(true);
-	        		 txtResRep.setEditable(true);
-	        		 chkres = true;
-	        	 }
-	        	 else {
-	        		 txtResFind.setBorder(borderDefault);
-	        		 txtResFind.setEditable(false);
-	        		 txtResRep.setBorder(borderDefault);
-	        		 txtResRep.setEditable(false);
-	        		 chkres = false;
-	        	 }
-	         }
-	     });
-		panMR.add(chkRes);
 		
 		// configuration tab info
 		JLabel lblLocalPort = new JLabel("Local Port:");
@@ -622,7 +663,7 @@ public class ProKSy {
 		       		int selectedrow = tblTraffic.getSelectedRow();
 		       		if(selectedrow>=0) {
 		       			frame.setEnabled(false);
-		       			MessageViewer mv = new MessageViewer(tblTraffic.getValueAt(selectedrow, 1).toString());
+		       			MessageViewer mv = new MessageViewer(tblTraffic.getValueAt(selectedrow, 1).toString(),false,null);
 		       			mv.setVisible(true);
 		       			mv.addWindowListener(new WindowAdapter() {
 						    @Override
@@ -1114,6 +1155,9 @@ public class ProKSy {
 			else{
 				tabMain.setSelectedIndex(3);
 			}
+		}
+		else if (thread.getState() == Thread.State.WAITING) {
+			
 		}
 		else if (thread.getState() == Thread.State.TERMINATED) {
 			thread = new Run();
