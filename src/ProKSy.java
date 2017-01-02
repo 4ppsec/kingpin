@@ -155,13 +155,13 @@ public class ProKSy {
 		txtReqFind.setEditable(false);
 		panMR.add(txtReqFind);
 		
-		JLabel mrHelp = new JLabel("<html>You can match & replace traffic while ProKSy is up, at any time.<br>"
-				+ "Simply modify the text feilds below with the data you want to find/replace.</html>");
+		JLabel mrHelp = new JLabel("<html>To automatically match & replace traffic, modify the text fields.<br/>"
+									+"To manually edit the traffic, check the <i>Intercept</i> checkboxes below.</html>");
 		mrHelp.setFont(font);
 		mrHelp.setBounds(12,5,425,50);
 		panMR.add(mrHelp);
 		
-		txtReqFind.setBounds(137, 73, 130, 20);
+		txtReqFind.setBounds(137, 83, 130, 20);
 		txtReqFind.setColumns(10);
 		txtReqFind.addFocusListener(new FocusListener() {
 			public void focusGained(FocusEvent arg0) {
@@ -198,10 +198,10 @@ public class ProKSy {
 		
 			JLabel lblReqRep = new JLabel("with:");
 			lblReqRep.setFont(font);
-			lblReqRep.setBounds(275, 74, 75, 16);
+			lblReqRep.setBounds(275, 84, 75, 16);
 			panMR.add(lblReqRep);
 			
-			txtReqRep.setBounds(310, 73, 130, 20);
+			txtReqRep.setBounds(310, 83, 130, 20);
 			txtReqRep.setColumns(10);
 			txtReqRep.addFocusListener(new FocusListener() {
 				public void focusGained(FocusEvent arg0) {
@@ -238,10 +238,8 @@ public class ProKSy {
 			txtReqRep.setEditable(false);
 			panMR.add(txtReqRep);
 			
-			
-			
 			final Checkbox chkReq = new Checkbox("Request replace:");
-			chkReq.setBounds(10, 75, 110, 16);
+			chkReq.setBounds(12, 85, 110, 16);
 			chkReq.addItemListener(new ItemListener() {
 	         public void itemStateChanged(ItemEvent e) {
 	        	 if (e.getStateChange() == ItemEvent.SELECTED) {
@@ -260,7 +258,7 @@ public class ProKSy {
 	     });
 			panMR.add(chkReq);
 			
-			txtResFind.setBounds(139, 110, 130, 20);
+			txtResFind.setBounds(139, 120, 130, 20);
 			txtResFind.setColumns(10);
 			txtResFind.addFocusListener(new FocusListener() {
 				public void focusGained(FocusEvent e) {
@@ -300,10 +298,10 @@ public class ProKSy {
 			
 			JLabel lblResRep = new JLabel("with:");
 			lblResRep.setFont(font);
-			lblResRep.setBounds(277, 110, 75, 16);
+			lblResRep.setBounds(277, 120, 75, 16);
 			panMR.add(lblResRep);
 			
-			txtResRep.setBounds(312, 110, 130, 20);
+			txtResRep.setBounds(312, 120, 130, 20);
 			txtResRep.setColumns(10);
 			txtResRep.addFocusListener(new FocusListener() {
 				public void focusGained(FocusEvent e) {
@@ -342,7 +340,7 @@ public class ProKSy {
 			panMR.add(txtResRep);
 			
 			final Checkbox chkRes = new Checkbox("Response replace:");
-			chkRes.setBounds(12, 112, 120, 16);
+			chkRes.setBounds(12, 122, 120, 16);
 			chkRes.addItemListener(new ItemListener() {
 	         public void itemStateChanged(ItemEvent e) {
 	        	 if (e.getStateChange() == ItemEvent.SELECTED) {
@@ -362,7 +360,7 @@ public class ProKSy {
 			panMR.add(chkRes);
 			
 			JCheckBox chckbxInterceptRequest = new JCheckBox("Intercept Request");
-			chckbxInterceptRequest.setBounds(99, 139, 143, 25);
+			chckbxInterceptRequest.setBounds(99, 155, 143, 25);
 			chckbxInterceptRequest.addActionListener(new ActionListener(){
 
 				@Override
@@ -380,7 +378,7 @@ public class ProKSy {
 			panMR.add(chckbxInterceptRequest);
 			
 			JCheckBox chckbxInterceptResponse = new JCheckBox("Intercept Response");
-			chckbxInterceptResponse.setBounds(241, 139, 143, 25);
+			chckbxInterceptResponse.setBounds(241, 155, 143, 25);
 			chckbxInterceptResponse.addActionListener(new ActionListener(){
 
 				@Override
@@ -475,7 +473,7 @@ public class ProKSy {
 		    	int selectedrow = tblLog.getSelectedRow();
 	       		if (selectedrow>=0 && me.getClickCount() == 2) {
 	       			frame.setEnabled(false);
-	       			MessageViewer mv = new MessageViewer(tblLog.getValueAt(selectedrow, 1).toString(),false,null);
+	       			MessageViewer mv = new MessageViewer(tblLog.getValueAt(selectedrow, 1).toString(), false, null);
 	       			mv.setVisible(true);
 	       			mv.addWindowListener(new WindowAdapter() {
 					    @Override
@@ -836,30 +834,26 @@ public class ProKSy {
 				    	tabMain.setSelectedIndex(3);
 					}
 				}
-				//try {
-					menuStop.setEnabled(false);
-					menuStart.setEnabled(true);
-					menuClear.setEnabled(true);
-					menuLoad.setEnabled(true);
-					chckbxSSL.setEnabled(true);
-					menuBrowseKS.setEnabled(true);
-					txtKSPass.setEditable(true);
-					btnSelectKS.setEnabled(true);
-					txtLocalPort.setEnabled(true);
-					txtLocalHost.setEnabled(true);
-					txtRemotePort.setEnabled(true);
-					txtRemoteHost.setEnabled(true);
-					chkReq.setEnabled(true);
-					chkRes.setEnabled(true);
-					menuBar.setBackground(Color.RED);
-					Run.currentThread().interrupt();
-				/*} catch (InterruptedException e1) {
-					e1.printStackTrace();
-				}*/
-
+				menuStop.setEnabled(false);
+				menuStart.setEnabled(true);
+				menuClear.setEnabled(true);
+				menuLoad.setEnabled(true);
+				chckbxSSL.setEnabled(true);
+				menuBrowseKS.setEnabled(true);
+				txtKSPass.setEditable(true);
+				btnSelectKS.setEnabled(true);
+				txtLocalPort.setEnabled(true);
+				txtLocalHost.setEnabled(true);
+				txtRemotePort.setEnabled(true);
+				txtRemoteHost.setEnabled(true);
+				chkReq.setEnabled(true);
+				chkRes.setEnabled(true);
+				menuBar.setBackground(Color.RED);
+				thread.dispose();
 			}
 		});
-				
+		
+		// About page data
 		menuAbout.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				JOptionPane.showMessageDialog(frame,new About (
@@ -873,7 +867,7 @@ public class ProKSy {
 		});
 		helpMenu.add(menuAbout);	
 		
-		// load
+		// load from ProKsy.properties
 		menuLoad.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				SimpleDateFormat time_formatter = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss");
@@ -1040,7 +1034,6 @@ public class ProKSy {
 			PrintWriter outToServer=null;
 			String answer="";
 			
-			
 			if(SSL){
 				System.setProperty("javax.net.ssl.trustStore", ks);
 				SSLSocketFactory sslsocketfactory = (SSLSocketFactory) SSLSocketFactory.getDefault();
@@ -1056,28 +1049,26 @@ public class ProKSy {
       outToServer.print(msgSend + '\n');
       String current_time_str = time_formatter.format(System.currentTimeMillis());
       if(SSL)
-      modeltr.addRow(new Object[]{"↖", msgSend, sslsocket.getLocalSocketAddress().toString().replace("/",""), sslsocket.getRemoteSocketAddress().toString().replace("/",""), current_time_str});
-      else    modeltr.addRow(new Object[]{"↖", msgSend, socket.getLocalSocketAddress().toString().replace("/",""), socket.getRemoteSocketAddress().toString().replace("/",""), current_time_str});
+    	  modeltr.addRow(new Object[]{"↖", msgSend, sslsocket.getLocalSocketAddress().toString().replace("/",""), sslsocket.getRemoteSocketAddress().toString().replace("/",""), current_time_str});
+      else    
+    	  modeltr.addRow(new Object[]{"↖", msgSend, socket.getLocalSocketAddress().toString().replace("/",""), socket.getRemoteSocketAddress().toString().replace("/",""), current_time_str});
       
       outToServer.flush();
       if(SSL){
-      answer = readAll(sslsocket);
-      sslsocket.close();
+    	  answer = readAll(sslsocket);
+    	  sslsocket.close();
       }
       else{
     	  answer = readAll(socket);
     	  socket.close();
       }
-      
-      
+       
       current_time_str = time_formatter.format(System.currentTimeMillis());
       if(SSL){
-      modeltr.addRow(new Object[]{"↘", answer, sslsocket.getRemoteSocketAddress().toString().replace("/",""), sslsocket.getLocalSocketAddress().toString().split("/")[1], current_time_str});
+    	  modeltr.addRow(new Object[]{"↘", answer, sslsocket.getRemoteSocketAddress().toString().replace("/",""), sslsocket.getLocalSocketAddress().toString().split("/")[1], current_time_str});
       }
       else{
-    	  
-    	  modeltr.addRow(new Object[]{"↘", answer, socket.getRemoteSocketAddress().toString().replace("/",""), socket.getLocalSocketAddress().toString().split("/")[1], current_time_str});
-    	     
+    	  modeltr.addRow(new Object[]{"↘", answer, socket.getRemoteSocketAddress().toString().replace("/",""), socket.getLocalSocketAddress().toString().split("/")[1], current_time_str});     
       }
       return answer;
 		}
@@ -1195,7 +1186,7 @@ public class ProKSy {
 				menuBar.setBackground(Color.GREEN);
 				String current_time_str = time_formatter.format(System.currentTimeMillis());
 				model.addRow(new Object[]{"►", "Started. Listening on: " + ProKSy.lh+":"+ProKSy.lp + "→" + ProKSy.rh+":"+ProKSy.rp , current_time_str});
-				thread.isInterupt = false;
+				//thread.isInterupt = false;
 				tabMain.setSelectedIndex(2);
 				thread.start();
 			}
