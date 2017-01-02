@@ -404,8 +404,8 @@ public class ProKSy {
 		frame.setIconImage(Toolkit.getDefaultToolkit().getImage(ProKSy.class.getResource(SMALL_LOGO)));
 		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		frame.getContentPane();
-		Dimension d = new Dimension(475,275);
-		frame.setPreferredSize(new Dimension(475, 300));
+		Dimension d = new Dimension(475,280);
+		frame.setPreferredSize(new Dimension(475, 290));
 		frame.setVisible(true);
 		frame.setMinimumSize(d);
 				
@@ -743,7 +743,7 @@ public class ProKSy {
 				}
 				else  {rh = txtRemoteHost.getText(); }
 				
-				if (txtKSPath.getText().length() < 1 ){
+				if (chckbxSSL.isSelected() && txtKSPath.getText().length() < 1 ){
 					btnSelectKS.setBorder(border);
 					canStart = false;
 				}
@@ -792,8 +792,8 @@ public class ProKSy {
 			public void actionPerformed(ActionEvent e) {
 				SimpleDateFormat time_formatter = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss");
 				DefaultTableModel model = (DefaultTableModel) ProKSy.tblLog.getModel();
-				thread.interrupt();
-				thread.isInterupt=true;
+				//thread.interrupt();
+				//thread.isInterupt=true;
 				@SuppressWarnings("unused")
 				Socket socket=null;
 				if(SSL) {
@@ -836,28 +836,34 @@ public class ProKSy {
 				    	tabMain.setSelectedIndex(3);
 					}
 				}
-				menuStop.setEnabled(false);
-				menuStart.setEnabled(true);
-				menuClear.setEnabled(true);
-				menuLoad.setEnabled(true);
-				chckbxSSL.setEnabled(true);
-				menuBrowseKS.setEnabled(true);
-				txtKSPass.setEditable(true);
-				btnSelectKS.setEnabled(true);
-				txtLocalPort.setEnabled(true);
-				txtLocalHost.setEnabled(true);
-				txtRemotePort.setEnabled(true);
-				txtRemoteHost.setEnabled(true);
-				chkReq.setEnabled(true);
-				chkRes.setEnabled(true);
-				menuBar.setBackground(Color.RED);
+				//try {
+					menuStop.setEnabled(false);
+					menuStart.setEnabled(true);
+					menuClear.setEnabled(true);
+					menuLoad.setEnabled(true);
+					chckbxSSL.setEnabled(true);
+					menuBrowseKS.setEnabled(true);
+					txtKSPass.setEditable(true);
+					btnSelectKS.setEnabled(true);
+					txtLocalPort.setEnabled(true);
+					txtLocalHost.setEnabled(true);
+					txtRemotePort.setEnabled(true);
+					txtRemoteHost.setEnabled(true);
+					chkReq.setEnabled(true);
+					chkRes.setEnabled(true);
+					menuBar.setBackground(Color.RED);
+					Run.currentThread().interrupt();
+				/*} catch (InterruptedException e1) {
+					e1.printStackTrace();
+				}*/
+
 			}
 		});
 				
 		menuAbout.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				JOptionPane.showMessageDialog(frame,new About (
-					    "ProKSy v0.7<br>© <a href=\"https://il.linkedin.com/in/gilad-ofir-44959919\">Gilad Ofir</a>"
+					    "ProKSy v0.8<br>© <a href=\"https://il.linkedin.com/in/gilad-ofir-44959919\">Gilad Ofir</a>"
 					    + " and <a href=\"https://il.linkedin.com/in/talmelamed\">Tal Melamed</a>"
 					    + "<br><a href=\"https://appsec-labs.com\">AppSec Labs</a>"),
 					    "ProKSy",
@@ -891,11 +897,17 @@ public class ProKSy {
 				    			txtRemotePort.setText(line.substring(11));
 				    			txtRemotePort.setBorder(borderDefault);
 				    		}
-				    		else if ( line.startsWith("KSPath=") ) {
+				    		else if (line.startsWith("SSL=true")) {
+							    	chckbxSSL.setSelected(true);
+				    		}
+				    		else if (line.startsWith("SSL=false")) {
+						    	chckbxSSL.setSelected(false);
+				    		}
+							else if ( line.startsWith("KSPath=") && chckbxSSL.isSelected() ) {
 				    			txtKSPath.setText(line.substring(7));
 				    			btnSelectKS.setBorder(borderDefault);
-				    		}
-				    		else { }
+				    		}   
+							else {}
 				    	}
 				    String current_time_str = time_formatter.format(System.currentTimeMillis());
 			    	model.addRow(new Object[]{"✔ ", "Data loaded from properties file.", current_time_str});
@@ -925,7 +937,14 @@ public class ProKSy {
 					writer.println("LocalPort="+txtLocalPort.getText());
 					writer.println("RemoteHost="+txtRemoteHost.getText());
 					writer.println("RemotePort="+txtRemotePort.getText());
-					writer.println("KSPath="+txtKSPath.getText());
+					if ( chckbxSSL.isSelected() ) {
+						writer.println("SSL=true");
+						writer.println("KSPath="+txtKSPath.getText());
+					}
+					else {
+						writer.println("SSL=false");
+						writer.println("KSPath=");
+					}
 					String current_time_str = time_formatter.format(System.currentTimeMillis());
 			    	model.addRow(new Object[]{"✔", "Data saved.", current_time_str});
 					writer.close();

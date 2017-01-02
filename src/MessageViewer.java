@@ -12,6 +12,7 @@ import javax.swing.JMenuItem;
 import javax.swing.JTextArea;
 
 public class MessageViewer extends JFrame {
+	@SuppressWarnings("unused")
 	private static Run thread = null;
 	private static final long serialVersionUID = 1L;
 	private ScrollPane contentPane;
@@ -26,10 +27,8 @@ public class MessageViewer extends JFrame {
 		EventQueue.invokeLater(new Runnable() {
 			public void run() {
 				try {
-					
 					MessageViewer frame = new MessageViewer(message,intercepted,thread=null);
-					frame.setVisible(true);	
-							
+					frame.setVisible(true);			
 				} catch (Exception e) {
 					e.printStackTrace();
 				}
@@ -62,13 +61,10 @@ public class MessageViewer extends JFrame {
 				 thread.newMessage = newMessage;
 				 setVisible(false);
 				 thread.res();
-				 
 			}
-			
-			
-			
 		});
-		if(!intercepted)mntmForward.setEnabled(false);
+		if (!intercepted)
+			mntmForward.setEnabled(false);
 		else{
 			mntmForward.setEnabled(true);
 		}
@@ -81,11 +77,9 @@ public class MessageViewer extends JFrame {
 		else {
 			textArea.setEditable(true);
 			textArea.setBackground(Color.WHITE);
-			
 		}
 		contentPane.add(textArea, BorderLayout.NORTH);
 		setContentPane(contentPane);
 		this.setPreferredSize(textArea.getPreferredSize());
 	}
-
 }
