@@ -1,6 +1,5 @@
 import java.awt.BorderLayout;
 import java.awt.Color;
-import java.awt.ComponentOrientation;
 import java.awt.Dimension;
 import java.awt.EventQueue;
 import java.awt.ScrollPane;
@@ -11,15 +10,12 @@ import java.awt.event.WindowListener;
 import java.text.SimpleDateFormat;
 
 import javax.swing.JFrame;
-import javax.swing.JMenu;
 import javax.swing.JMenuBar;
 import javax.swing.JMenuItem;
 import javax.swing.JTextArea;
 import javax.swing.SwingConstants;
 import javax.swing.table.DefaultTableModel;
 import java.awt.Component;
-import java.awt.Rectangle;
-import java.awt.Font;
 import java.awt.Cursor;
 
 public class MessageViewer extends JFrame {
