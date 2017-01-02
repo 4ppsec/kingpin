@@ -357,45 +357,37 @@ public class ProKSy {
 	        	 }
 	         }
 	     });
-			panMR.add(chkRes);
-			
-			JCheckBox chckbxInterceptRequest = new JCheckBox("Intercept Request");
-			chckbxInterceptRequest.setBounds(99, 155, 143, 25);
-			chckbxInterceptRequest.addActionListener(new ActionListener(){
-
-				@Override
-				public void actionPerformed(ActionEvent e) {
-						if(chckbxInterceptRequest.isSelected()){	
-							interceptRequest = true;							
-						}
-						else{
-							interceptRequest = false;
-						}	
+		panMR.add(chkRes);
+		
+		JCheckBox chckbxInterceptRequest = new JCheckBox("Intercept Request");
+		chckbxInterceptRequest.setBounds(99, 155, 143, 25);
+		chckbxInterceptRequest.addActionListener(new ActionListener(){
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				if(chckbxInterceptRequest.isSelected()){	
+					interceptRequest = true;							
 				}
-			});
-			
-			
-			panMR.add(chckbxInterceptRequest);
-			
-			JCheckBox chckbxInterceptResponse = new JCheckBox("Intercept Response");
-			chckbxInterceptResponse.setBounds(241, 155, 143, 25);
-			chckbxInterceptResponse.addActionListener(new ActionListener(){
-
-				@Override
-				public void actionPerformed(ActionEvent e) {
-					if(chckbxInterceptResponse.isSelected()){	
-						interceptResponse = true;							
-					}
-					else{
-						interceptResponse = false;
-					}	
-					
+				else{
+					interceptRequest = false;
+				}	
+			}
+		});
+		panMR.add(chckbxInterceptRequest);
+		
+		JCheckBox chckbxInterceptResponse = new JCheckBox("Intercept Response");
+		chckbxInterceptResponse.setBounds(241, 155, 143, 25);
+		chckbxInterceptResponse.addActionListener(new ActionListener(){
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				if(chckbxInterceptResponse.isSelected()){	
+					interceptResponse = true;							
 				}
-				
-				
-				
-			});
-			panMR.add(chckbxInterceptResponse);
+				else{
+					interceptResponse = false;
+				}	
+			}
+		});
+		panMR.add(chckbxInterceptResponse);
 		tabMain.addTab("Traffic", null, scrollPaneTraffic, null);
 		tabMain.addTab("Log", null, scrollPaneLog, null);
 		
@@ -407,14 +399,10 @@ public class ProKSy {
 		frame.setVisible(true);
 		frame.setMinimumSize(d);
 				
-		
-		
 		// default border
 		frame.getContentPane().add(tabMain);
 		tabMain.setBounds(10, 10, 440, 200);
 		
-		// traffic		
-		modeltr.addColumn("");
 		modeltr.addColumn("Message");
 		modeltr.addColumn("From");
 		modeltr.addColumn("To");
@@ -486,7 +474,6 @@ public class ProKSy {
 		    }
 		});
 	
-		
 		// configuration tab info
 		JLabel lblLocalPort = new JLabel("Local Port:");
 		lblLocalPort.setBounds(36, 22, 84, 16);
@@ -625,7 +612,6 @@ public class ProKSy {
 		    	  if(chckbxSSL.isSelected()){
 		    		  btnSelectKS.setEnabled(true);
 		    		  txtKSPass.setEnabled(true);
-		    		  
 		    	  }
 		    	  else{
 		    		  btnSelectKS.setEnabled(false);
@@ -633,7 +619,7 @@ public class ProKSy {
 		    	  }
 		    	  SSL=chckbxSSL.isSelected();
 		      }
-		    };
+		};
 		chckbxSSL.addChangeListener(changeListener);   
 		//chckbxSSL.setBounds(285, 76, 113, 25);
 		chckbxSSL.setBounds(10, 84, 50, 20);
@@ -642,7 +628,6 @@ public class ProKSy {
 		proksy_logo.setBounds(120, 115, 210, 85);
 		panConf.add(proksy_logo);
 		
-				
 		// top menu options
 		final JMenuBar menuBar = new JMenuBar();
 		menuBar.setBackground(Color.RED);
@@ -654,10 +639,10 @@ public class ProKSy {
 		JMenu mnView = new JMenu("View");
 		menuBar.add(mnView);
 		
-		JMenuItem mntmView = new JMenuItem("View in Separate Window");
+		JMenuItem mntmView = new JMenuItem("View Messaage");
 		mntmView.addActionListener(new ActionListener() {
 			 public void actionPerformed(java.awt.event.ActionEvent evt) {
-			     
+				
 		       		int selectedrow = tblTraffic.getSelectedRow();
 		       		if(selectedrow>=0) {
 		       			frame.setEnabled(false);
@@ -670,6 +655,21 @@ public class ProKSy {
 						    	ProKSy.frame.setEnabled(true);
 						    }
 						});
+		       		}
+		       		else {
+		       			selectedrow = tblLog.getSelectedRow();
+		       			if(selectedrow>=0) {
+			       			frame.setEnabled(false);
+			       			MessageViewer mv = new MessageViewer(tblLog.getValueAt(selectedrow, 1).toString(),false,null);
+			       			mv.setVisible(true);
+			       			mv.addWindowListener(new WindowAdapter() {
+							    @Override
+							    public void windowClosing(WindowEvent windowEvent) {
+							    	mv.dispose();
+							    	ProKSy.frame.setEnabled(true);
+							    }
+							});
+			       		}
 		       		}
 			 }
 		});
@@ -695,7 +695,6 @@ public class ProKSy {
         URL img_Clear = ProKSy.class.getResource(CLEAR_ICON);
         final ImageIcon iconClear = new ImageIcon(img_Clear);
         
-        
         final JMenuItem menuStart = new JMenuItem("Start",iconStart);
         final JMenuItem menuStop = new JMenuItem("Stop",iconStop);
         final JMenuItem menuSave = new JMenuItem("Save",iconSave);
@@ -710,8 +709,6 @@ public class ProKSy {
 		menuStop.setEnabled(false);
 		menu.add(menuStart);
 		menu.add(menuStop);
-		
-
 		
 		// file options
 		menuStart.addActionListener(new ActionListener() {
@@ -782,7 +779,7 @@ public class ProKSy {
 				    	model.addRow(new Object[]{"✘", e1, current_time_str});
 				    	tabMain.setSelectedIndex(3);
 					}
-			}
+				}
 		});
 		
 		//stop!!
@@ -919,7 +916,6 @@ public class ProKSy {
 		});
 		menu.add(menuLoad);
 
-		
 		// save
 		menuSave.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
@@ -1195,7 +1191,6 @@ public class ProKSy {
 			}
 		}
 	}
-	
 	
 	public static void main(String[] args) throws Exception{
 		init();

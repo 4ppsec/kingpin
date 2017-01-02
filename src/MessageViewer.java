@@ -1,5 +1,7 @@
 import java.awt.BorderLayout;
 import java.awt.Color;
+import java.awt.ComponentOrientation;
+import java.awt.Dimension;
 import java.awt.EventQueue;
 import java.awt.ScrollPane;
 import java.awt.event.ActionEvent;
@@ -13,7 +15,12 @@ import javax.swing.JMenu;
 import javax.swing.JMenuBar;
 import javax.swing.JMenuItem;
 import javax.swing.JTextArea;
+import javax.swing.SwingConstants;
 import javax.swing.table.DefaultTableModel;
+import java.awt.Component;
+import java.awt.Rectangle;
+import java.awt.Font;
+import java.awt.Cursor;
 
 public class MessageViewer extends JFrame {
 	@SuppressWarnings("unused")
@@ -54,46 +61,55 @@ public class MessageViewer extends JFrame {
 		setBounds(100, 100, 380, 240);
 		
 		JMenuBar menuBar = new JMenuBar();
-		menuBar.setToolTipText("Forward/Cancel");
+		menuBar.setForeground(Color.LIGHT_GRAY);
+		menuBar.setOpaque(false);
+		menuBar.setIgnoreRepaint(true);
+		menuBar.setAlignmentX(Component.LEFT_ALIGNMENT);
+		//menuBar.setToolTipText("Forward/Cancel");
 		setJMenuBar(menuBar);
-		
-		JMenu mnaction = new JMenu("Action");
-		menuBar.add(mnaction);
-		
-		JMenuItem mntmForward = new JMenuItem("Forward");
-		mntmForward.addActionListener(new ActionListener(){
-
+		JMenuItem mnForward = new JMenuItem("Forward");
+		mnForward.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
+		mnForward.setAlignmentX(Component.LEFT_ALIGNMENT);
+		mnForward.setMaximumSize(new Dimension(75, 50));
+		mnForward.setHorizontalAlignment(SwingConstants.LEFT);
+		mnForward.addActionListener(new ActionListener() {
 			@Override
-			public void actionPerformed(ActionEvent e) {
-				 newMessage = textArea.getText();
-				 thread.newMessage = newMessage;
-				 setVisible(false);
-				 thread.res();
-			}
+		    public void actionPerformed(ActionEvent e) {
+				newMessage = textArea.getText();
+				thread.newMessage = newMessage;
+				setVisible(false);
+				thread.res();
+		    }
 		});
-		JMenuItem mntmCancel = new JMenuItem("Cancel");
-		mntmCancel.addActionListener(new ActionListener(){
-
+		menuBar.add(mnForward);
+		
+		JMenuItem mnCancel = new JMenuItem("Cancel");
+		mnCancel.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
+		mnCancel.setAlignmentX(Component.LEFT_ALIGNMENT);
+		mnCancel.setMaximumSize(new Dimension(75, 50));
+		mnCancel.setHorizontalAlignment(SwingConstants.LEFT);
+		mnCancel.addActionListener(new ActionListener() {
 			@Override
-			public void actionPerformed(ActionEvent e) {
-				 //newMessage = textArea.getText();
-				 thread.newMessage = message2;
-				 setVisible(false);
-				 thread.res();
-			}
+		    public void actionPerformed(ActionEvent e) {
+				newMessage = message2;
+				thread.newMessage = newMessage;
+				setVisible(false);
+				thread.res();
+		    }
 		});
+		menuBar.add(mnCancel);
+
 		if (!intercepted) {
-			mntmForward.setEnabled(false);
-			mntmCancel.setEnabled(false);
-			mnaction.setEnabled(false);
+			mnForward.setEnabled(false);
+			mnCancel.setEnabled(false);
+			menuBar.setVisible(false);
 		}
 		else {
-			mntmForward.setEnabled(true);
-			mntmCancel.setEnabled(true);
-			mnaction.setEnabled(true);
+
+			mnForward.setEnabled(true);
+			mnCancel.setEnabled(true);
 		}
-		mnaction.add(mntmForward);
-		mnaction.add(mntmCancel);
+
 		contentPane = new ScrollPane();
 		textArea.setLineWrap(true);
 		textArea.setBackground(ProKSy.mycolor);

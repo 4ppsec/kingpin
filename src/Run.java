@@ -41,9 +41,9 @@ public class Run extends Thread {
 	 public synchronized void res() {
 		 running = true;
 		 synchronized (obj){
-		 obj.notify();
+			 obj.notify();
 		 }
-	   }
+	}
 	public boolean initialize() {
 		SimpleDateFormat time_formatter = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss");
 		DefaultTableModel model = (DefaultTableModel) ProKSy.tblLog.getModel();
