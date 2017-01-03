@@ -66,6 +66,7 @@ import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
 import javax.swing.table.DefaultTableModel;
 
+
 public class ProKSy {
 	
 	private static final String BIG_LOGO = "appsec_logo.png";
@@ -402,7 +403,8 @@ public class ProKSy {
 		// default border
 		frame.getContentPane().add(tabMain);
 		tabMain.setBounds(10, 10, 440, 200);
-		
+		//traffic
+		modeltr.addColumn("");
 		modeltr.addColumn("Message");
 		modeltr.addColumn("From");
 		modeltr.addColumn("To");
