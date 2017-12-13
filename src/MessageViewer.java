@@ -53,7 +53,7 @@ public class MessageViewer extends JFrame {
 	 */
 	public MessageViewer(String message2, boolean intercepted, Run thread) {
 		JTextArea textArea = new JTextArea();
-		setTitle("ProKSy Traffic Viewer");
+		setTitle("Kingpin Traffic Viewer");
 		setBounds(100, 100, 380, 240);
 		
 		JMenuBar menuBar = new JMenuBar();
