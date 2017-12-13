@@ -1,6 +1,6 @@
-![alt tag](https://appsec-labs.com/wp-content/uploads/2016/10/proksy_logo_big.png)
+![alt tag](https://appsec-labs.com/wp-content/uploads/2017/12/kingpin_icon.png)
 
-A TCP Proxy with Java KeyStore Handling to Support SSL/TLS connections.
+A TCP Proxy with Java KeyStore Handling to Support SSL/TLS connections and bypassing certificate/key pinnings.
 
 By Gilad Ofir [![alt tag](http://www.biogenes-assays.com/fileadmin/templates/biogenes2013/templates_sites/images/icons/linkedin_logo.png)](https://il.linkedin.com/in/gilad-ofir-44959919) [![alt tag](https://www.emberaddons.com/assets/github-logo.svg)](https://github.com/giladof)
 <br>
@@ -8,4 +8,4 @@ and Tal Melamed  [![alt tag](http://www.biogenes-assays.com/fileadmin/templates/
 
 
 Website & Screenshots:
-https://appsec-labs.com/proksy/
+https://appsec-labs.com/kingpin/
