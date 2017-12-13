@@ -126,7 +126,7 @@ public class ProKSy {
 	
 		final JScrollPane scrollPaneLog = new JScrollPane(tblLog, ScrollPaneConstants.VERTICAL_SCROLLBAR_AS_NEEDED, ScrollPaneConstants.HORIZONTAL_SCROLLBAR_AS_NEEDED);
         // main frame
-        frame = new JFrame("ProKSy by AppSec Labs");
+        frame = new JFrame("Kingpin by AppSec Labs");
         ProKSy.mycolor = frame.getBackground();
         final Border borderDefault =  UIManager.getBorder("TextField.border");
 		
@@ -856,10 +856,10 @@ public class ProKSy {
 		menuAbout.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				JOptionPane.showMessageDialog(frame,new About (
-					    "ProKSy v0.8<br>© <a href=\"https://il.linkedin.com/in/gilad-ofir-44959919\">Gilad Ofir</a>"
+					    "Kingpin v0.8.1<br>© <a href=\"https://il.linkedin.com/in/gilad-ofir-44959919\">Gilad Ofir</a>"
 					    + " and <a href=\"https://il.linkedin.com/in/talmelamed\">Tal Melamed</a>"
-					    + "<br><a href=\"https://appsec-labs.com\">AppSec Labs</a>"),
-					    "ProKSy",
+					    + "<br><a href=\"https://appsec-labs.com\/kingping\">AppSec Labs</a>"),
+					    "Kingpin",
 					    JOptionPane.PLAIN_MESSAGE,
 					    icon);
 			}
